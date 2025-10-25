@@ -1,8 +1,8 @@
 import './App.css';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom'; // Importa useNavigate
-import HomePage from './pages/HomePage';
+import HomePage from './pages/homepage';
 import LoginPage from './pages/LoginPage';
-import { useAuth } from "./contexts/AuthContext"; // <-- Importa el hook
+import { useAuth } from "./contexts/AuthContext";  // <-- Importa el hook
 import { auth } from './firebase'; // Importa auth para logout
 import { signOut } from 'firebase/auth'; // Importa signOut
 
