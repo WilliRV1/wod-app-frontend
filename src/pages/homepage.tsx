@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react'; // <-- Importa useState y useEffect
 import { getAllCompetitions } from '../services/competition.service'; // <-- Importa tu servicio
+import CompetitionCard from "../components/CompetitionCard";
+
+import { Container, Box, } from '@mui/material'
+import  Typography  from '@mui/material/Typography'
 
 // Definimos un tipo para saber cómo se ve una competencia 
 interface Competition {
@@ -40,29 +44,32 @@ function HomePage() {
 
   // 3. Renderizado condicional basado en el estado
   if (loading) {
-    return <div>Cargando competencias... ⏳</div>;
+    return <Container sx={{ py: 4 }}><Typography>Cargando competencias... ⏳</Typography></Container>;
   }
 
   if (error) {
-    return <div style={{ color: 'red' }}>{error} 😥</div>;
+    return <Container sx={{ py: 4 }}><Typography color="error">{error} 😥</Typography></Container>;
   }
 
   return (
-    <div>
-      <h2>Próximas Competencias 🏋️‍♀️</h2>
+    // Container centra el contenido y añade padding
+    <Container sx={{ py: 4 }}> {/* py es padding vertical */}
+      <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', textAlign: 'center', mb: 4 }}>
+        Próximas Competencias 🏋️‍♀️
+      </Typography>
+
       {competitions.length === 0 ? (
-        <p>No hay competencias disponibles por ahora.</p>
+        <Typography sx={{ textAlign: 'center' }}>No hay competencias disponibles por ahora.</Typography>
       ) : (
-        <ul>
-          {/* Mapeamos el array de competencias para mostrar cada una */}
+        // Box actúa como un div, podemos usar flexbox para layout si quisiéramos
+        <Box> 
           {competitions.map((comp) => (
-            <li key={comp._id}>
-              <strong>{comp.nombre}</strong> - {new Date(comp.fecha).toLocaleDateString()} en {comp.lugar}
-            </li>
+            // Renderiza una tarjeta por cada competencia
+            <CompetitionCard key={comp._id} competition={comp} /> 
           ))}
-        </ul>
+        </Box>
       )}
-    </div>
+    </Container>
   );
 }
 
