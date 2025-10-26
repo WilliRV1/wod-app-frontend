@@ -1,22 +1,24 @@
-// src/main.tsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
-import './index.css';
+import './index.css'; 
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext'; // <-- Import your AuthProvider
-import { ThemeProvider, CssBaseline } from '@mui/material'; // <-- Importa de MUI
-import theme from './theme';
+import { AuthProvider } from './contexts/AuthContext';
+import { ChakraProvider } from '@chakra-ui/react';
+import { defaultSystem } from "@chakra-ui/react"
+
+    
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}> {/* Aplica el tema */}
-      <CssBaseline /> {/* Resetea estilos base */}
-      <BrowserRouter> 
-        <AuthProvider> 
+    <BrowserRouter>
+      <AuthProvider>
+        <ChakraProvider value={defaultSystem}>
           <App /> 
-        </AuthProvider>
-      </BrowserRouter>
-    </ThemeProvider>
+       </ChakraProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </React.StrictMode>,
 );
+
