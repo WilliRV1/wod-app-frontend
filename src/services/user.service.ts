@@ -1,7 +1,7 @@
 // src/services/user.service.ts
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api'; // La URL de tu backend
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'; // La URL de tu backend
 
 // Datos que esperamos recibir del componente de registro
 interface UserProfileData {
