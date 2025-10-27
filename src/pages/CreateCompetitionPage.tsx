@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'; // Added React import
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+// import { useAuth } from '../contexts/AuthContext'; // Removed: Will be mocked
 // import { createCompetition } from '../services/competition.service'; // Assuming you have this service
-import { getMyBoxes } from '../services/box.service'; // Assuming you have this service
+// import { getMyBoxes } from '../services/box.service'; // Removed: Will be mocked
 import {
     Container,
     Heading,
@@ -20,21 +20,60 @@ import { Field } from "@chakra-ui/react";
 import { NativeSelectRoot, NativeSelectField } from "@chakra-ui/react";
 import toast from 'react-hot-toast';
 
-// --- MOCK FUNCTION ---
-// Remove this or replace with your actual import when ready
+// --- MOCK FUNCTIONS ---
+
+// Mock for createCompetition
 const createCompetition = async (data: any, token: string) => {
     console.log("Mock createCompetition called with:", data, token);
     // Simulate API response
     await new Promise(resolve => setTimeout(resolve, 500));
     return { competition: { _id: 'mock-id-123', ...data } };
 };
-// --- END MOCK FUNCTION ---
 
+// Mock for AuthContext
+const useAuth = () => {
+    console.log("Mock useAuth called");
+    // Simulate a logged-in user
+    const currentUser = {
+        getIdToken: async () => {
+            console.log("Mock getIdToken called");
+            await new Promise(resolve => setTimeout(resolve, 50));
+            return 'mock-firebase-token-12345';
+        },
+        uid: 'mock-user-uid-abc'
+        // Add other user properties if needed, e.g., email
+    };
 
+    // To test logged-out user, uncomment this line:
+    // const currentUser = null;
+
+    return { currentUser };
+};
+
+// Mock for Box interface
 interface Box {
     _id: string;
     nombre: string;
 }
+
+// Mock for getMyBoxes service
+const getMyBoxes = async (token: string): Promise<{ boxes: Box[] }> => {
+    console.log("Mock getMyBoxes called with token:", token);
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    // --- Simulate a user having boxes ---
+    return {
+        boxes: [
+            { _id: 'box-1', nombre: 'Mi Box Principal' },
+            { _id: 'box-2', nombre: 'CrossFit del Valle' }
+        ]
+    };
+
+    // --- To test user with NO boxes, uncomment this line: ---
+    // return { boxes: [] };
+};
+// --- END MOCK FUNCTIONS ---
+
 
 function CreateCompetitionPage() {
     const navigate = useNavigate();
@@ -213,11 +252,12 @@ function CreateCompetitionPage() {
                                             bg: tipoCompetencia === 'comunitaria' ? 'green.600' : 'green.500',
                                             color: 'white'
                                         }}
-                                        disabled={isLoading} // Corrected prop name
+                                        // FIX: Chakra Buttons use 'isDisabled'
+                                        isDisabled={isLoading}
                                     >
                                          <Box textAlign="center">
-                                              <Text fontWeight="semibold">Comunitaria</Text>
-                                              <Text fontSize="xs" fontWeight="normal" color={tipoCompetencia === 'comunitaria' ? 'gray.200': 'gray.400'}>Evento personal</Text>
+                                             <Text fontWeight="semibold">Comunitaria</Text>
+                                             <Text fontSize="xs" fontWeight="normal" color={tipoCompetencia === 'comunitaria' ? 'gray.200': 'gray.400'}>Evento personal</Text>
                                          </Box>
                                     </Button>
                                     <Button
@@ -228,7 +268,8 @@ function CreateCompetitionPage() {
                                         color={tipoCompetencia === 'oficial' ? 'white' : 'green.300'}
                                         borderColor="green.500"
                                         onClick={() => !isOficialDisabled && setTipoCompetencia('oficial')}
-                                        disabled={isOficialDisabled || isLoading} // Corrected prop name
+                                        // FIX: Chakra Buttons use 'isDisabled'
+                                        isDisabled={isOficialDisabled || isLoading}
                                         _hover={!isOficialDisabled ? { // Only apply hover if not disabled
                                             bg: tipoCompetencia === 'oficial' ? 'green.600' : 'green.500',
                                             color: 'white'
@@ -242,8 +283,8 @@ function CreateCompetitionPage() {
                                         }}
                                     >
                                          <Box textAlign="center">
-                                              <Text fontWeight="semibold">Oficial</Text>
-                                              <Text fontSize="xs" fontWeight="normal" color={tipoCompetencia === 'oficial' ? 'gray.200': 'gray.400'}>En nombre de tu Box</Text>
+                                             <Text fontWeight="semibold">Oficial</Text>
+                                             <Text fontSize="xs" fontWeight="normal" color={tipoCompetencia === 'oficial' ? 'gray.200': 'gray.400'}>En nombre de tu Box</Text>
                                          </Box>
                                     </Button>
                                 </Stack>
@@ -255,22 +296,21 @@ function CreateCompetitionPage() {
                                 <Field.Root w="100%">
                                     <Field.Label color="gray.300">Selecciona tu Box <Text as="span" color="red.500">*</Text></Field.Label>
                                     <NativeSelectRoot>
-                                        {/* Corrected based strictly on TS error: Use _disabled for state */}
+                                        {/* FIX: Use 'disabled' for the boolean prop on native elements */}
                                         <NativeSelectField
                                             value={selectedBoxId}
                                             onChange={(e) => setSelectedBoxId(e.target.value)}
                                             bg="gray.900"
                                             borderColor="gray.600"
                                             color="white"
-                                            // _disabled prop IS used for state control according to the error
-                                            _disabled={loadingBoxes || isLoading}
-                                            // Add styling within the _disabled prop if needed, or rely on defaults
-                                            // _disabled={{
-                                            //     opacity: 0.6,
-                                            //     cursor: 'not-allowed',
-                                            //     bg: 'gray.700',
-                                            //     ...(loadingBoxes || isLoading ? {} : {}) // Conditionally apply styles if needed
-                                            // }}
+                                            // FIX 1: 'disabled' takes the boolean
+                                            disabled={loadingBoxes || isLoading}
+                                            // FIX 2: '_disabled' takes the style object
+                                            _disabled={{
+                                                opacity: 0.6,
+                                                cursor: 'not-allowed',
+                                                bg: 'gray.700',
+                                            }}
                                             placeholder={loadingBoxes ? "Cargando Boxes..." : myBoxes.length === 0 ? "No tienes boxes registrados" : "Selecciona un Box"}
                                             required // Make selection mandatory if 'oficial' is chosen
                                         >
@@ -339,8 +379,8 @@ function CreateCompetitionPage() {
                                         colorScheme='green' // Attempts to color the picker, may vary by browser
                                         css={{ // More direct CSS approach
                                             '&::-webkit-calendar-picker-indicator': {
-                                              filter: 'invert(1)', // Makes the default icon whiteish
-                                              cursor: 'pointer'
+                                                filter: 'invert(1)', // Makes the default icon whiteish
+                                                cursor: 'pointer'
                                             },
                                           }}
                                     />
@@ -438,7 +478,8 @@ function CreateCompetitionPage() {
                                     colorScheme="gray"
                                     flex="1"
                                     onClick={() => navigate('/')} // Navigate to home or maybe back? navigate(-1)
-                                    disabled={isLoading} // Corrected prop name
+                                    // FIX: Chakra Buttons use 'isDisabled'
+                                    isDisabled={isLoading}
                                 >
                                     Cancelar
                                 </Button>
@@ -446,7 +487,7 @@ function CreateCompetitionPage() {
                                     type="submit"
                                     colorScheme="green"
                                     flex="1"
-                                    loading={isLoading} // Corrected prop name
+                                    isLoading={isLoading} // 'loading' is correct here, it implies disabled
                                     _hover={{
                                         transform: 'translateY(-2px)',
                                         shadow: 'lg'
