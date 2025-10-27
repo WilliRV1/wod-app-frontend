@@ -1,17 +1,20 @@
-// src/pages/CompetitionDetailPage.tsx
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; // <-- ¡Este es el hook clave!
-import { getCompetitionById } from '../services/competition.service'; // Importa la nueva función
+import { useParams } from 'react-router-dom'; 
+import { getCompetitionById, getPartnerFinder } from '../services/competition.service'; 
 import { ProgressCircle } from "@chakra-ui/react"
 import {
-    Container, Heading, Text, Box, Alert, 
-    Tag, Stack, List, ListItem
+    Container, Heading, Text, Box, Alert, 
+    Button, // <-- 1. AÑADE ESTA IMPORTACIÓN
+    Tag, Stack, List, ListItem, 
+     
 } from '@chakra-ui/react';
 import { Icon } from "@chakra-ui/react"
 import { Flex } from '@chakra-ui/react';
+import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-hot-toast';
 
-// Interfaz para los datos (debería coincidir con tu modelo y respuesta de la API)
 interface Competition {
+    buscando_parejas: partner[];
     _id: string;
     nombre: string;
     fecha: string;
@@ -20,14 +23,23 @@ interface Competition {
     categorias: string[];
     wods: string[];
     costo?: string;
-    organizador?: { nombre: string }; // 'organizador' es un objeto
-    creador?: { nombre: string }; // 'creador' es un objeto
+    organizador?: { nombre: string }; 
+    creador?: { nombre: string }; 
+}
+
+interface partner {
+    _id: string;
+    nombre: string;
+    nivel: string;
 }
 
 function CompetitionDetailPage() {
     // 1. Obtener el ID de la URL
-    // Si tu ruta es "/competitions/:id", useParams devolverá { id: "valor-del-id" }
+
     const { id } = useParams<{ id: string }>();
+    const {currentUser}= useAuth();
+
+
 
     // 2. Estados para guardar datos, carga y error
     const [competition, setCompetition] = useState<Competition | null>(null);
@@ -97,6 +109,30 @@ function CompetitionDetailPage() {
         );
     }
 
+
+    const handleJoinPartnerFinder = async () => {
+        if (!currentUser) {
+            toast.error("Debes iniciar sesión");
+            return;
+        }
+        
+        if (!id) return;
+
+        try {
+            const token = await currentUser.getIdToken(); // Obtiene el token de Firebase
+            const data = await getPartnerFinder(id, token); // Llama al servicio
+            
+            // Actualiza el estado local con la respuesta del backend
+            setCompetition(data.competition); 
+            
+            toast.success("¡Te has unido! Ahora apareces en la lista.");
+
+        } catch (err) {
+            toast.error("Error: No se pudo unir a la lista.");
+            console.error(err);
+        }
+        }
+    
     // --- Renderizado de los Detalles ---
     return (
         <Container py={6}>
@@ -144,11 +180,34 @@ function CompetitionDetailPage() {
                         ))}
                     </Box>
                 </Box>
+                <Box>
+                    <Heading as="h2" size="lg" mb={4}>Partner Finder</Heading>
+                     <Button onClick={handleJoinPartnerFinder} colorScheme="green" size="lg">
+                        ¡Unirme a la búsqueda!
+                    </Button>
 
-                {/* (Aquí podríamos añadir la lógica del "Partner Finder" más adelante) */}
+                    {/* La lista que muestra los resultados */}
+                    <Heading as="h3" size="md" mb={3}>Atletas Buscando Pareja:</Heading>
+                    {(!competition.buscando_parejas || competition.buscando_parejas.length === 0) ? (
+                        <Text>Nadie se ha unido a la búsqueda todavía. ¡Sé el primero!</Text>
+                    ) : (
+                    <List.Root>
+                        {competition.buscando_parejas.map((atleta: partner) => (
+                            <List.Item key={atleta._id} bg="gray.700" p={3} borderRadius="md">
+                                <Text fontSize="lg" fontWeight="bold">{atleta.nombre}</Text>
+                                {atleta.nivel && (
+                                    <Text fontSize="sm" color="gray.300">Nivel: {atleta.nivel}</Text>
+                                     )}
+                                    </List.Item>
+                                ))}
+                                </List.Root>
+                            )}
+                </Box>
+                
             </Stack>
         </Container>
     );
 }
 
 export default CompetitionDetailPage;
+

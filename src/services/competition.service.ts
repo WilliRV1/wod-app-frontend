@@ -25,3 +25,19 @@ export const getCompetitionById = async ( id: string ) => {
     throw error
   }
 }
+
+export const getPartnerFinder = async (competitionId: string, token: string) => {
+  try{
+    const response = await axios.put(`${API_URL}/competencias/${competitionId}/join-partner`, {}, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    
+    }
+  );
+    return response.data
+
+  }catch (error){
+    console.error ('Error al obtener la lista de partner finder')
+  }
+}

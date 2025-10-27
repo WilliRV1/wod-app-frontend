@@ -3,12 +3,14 @@ import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/homepage';
 import LoginPage from './pages/LoginPage';
 import CompetitionDetailPage from "./pages/CompetitionDetailPage"
-import { ChakraProvider, defaultSystem, Box } from "@chakra-ui/react"; // Importa Box
+import { ChakraProvider, defaultSystem, Box } from "@chakra-ui/react"; 
 import Navbar from './components/NavBar'; // Tu Navbar
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <ChakraProvider value={defaultSystem}>
+      
       <Navbar />
 
       {/* 2. Contenedor principal de la página */}
@@ -35,6 +37,10 @@ function App() {
           </Routes>
         </Box>
       </Box>
+      <Toaster toastOptions={{
+          // Duración por defecto para todas las alertas
+          duration: 2000, // 3 segundos
+        }}/>
     </ChakraProvider>
   );
 }
