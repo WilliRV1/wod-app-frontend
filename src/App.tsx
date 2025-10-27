@@ -8,14 +8,15 @@ import CreateBoxPage from './pages/CreateBoxPage';
 import { ChakraProvider, Box } from "@chakra-ui/react";
 import Navbar from './components/NavBar'; 
 import { Toaster } from 'react-hot-toast';
- 
+import { defaultSystem } from "@chakra-ui/react"
+
 
 function App() {
   // Removed providerProps constant
 
   return (
     // Removed the incorrect theme prop / spread props
-    <ChakraProvider value={undefined}>
+    <ChakraProvider value={defaultSystem}>
 
       <Navbar />
 
