@@ -12,7 +12,7 @@ import {
     Box,
     Text,
     Textarea,
-    Stack, // Keep Stack for layout if needed, but not for spacing prop error
+    Stack, // Keep Stack for layout if needed
     Flex,
     // RadioGroup is no longer needed if using Buttons
 } from '@chakra-ui/react';
@@ -213,7 +213,7 @@ function CreateCompetitionPage() {
                                             bg: tipoCompetencia === 'comunitaria' ? 'green.600' : 'green.500',
                                             color: 'white'
                                         }}
-                                        isLoading={isLoading} // Corrected prop name
+                                        disabled={isLoading} // Corrected prop name
                                     >
                                          <Box textAlign="center">
                                               <Text fontWeight="semibold">Comunitaria</Text>
@@ -228,7 +228,7 @@ function CreateCompetitionPage() {
                                         color={tipoCompetencia === 'oficial' ? 'white' : 'green.300'}
                                         borderColor="green.500"
                                         onClick={() => !isOficialDisabled && setTipoCompetencia('oficial')}
-                                        isDisabled={isOficialDisabled || isLoading} // Disable if no boxes or loading
+                                        disabled={isOficialDisabled || isLoading} // Corrected prop name
                                         _hover={!isOficialDisabled ? { // Only apply hover if not disabled
                                             bg: tipoCompetencia === 'oficial' ? 'green.600' : 'green.500',
                                             color: 'white'
@@ -261,12 +261,13 @@ function CreateCompetitionPage() {
                                             bg="gray.900"
                                             borderColor="gray.600"
                                             color="white"
-                                            _disabled={{ // Correct prop name
+                                            // _disabled prop is for STYLING the disabled state
+                                            _disabled={{
                                                 opacity: 0.6,
                                                 cursor: 'not-allowed',
                                                 bg: 'gray.700'
                                             }}
-                                            disabled={loadingBoxes || isLoading} // Use standard disabled here
+                                            disabled={loadingBoxes || isLoading} // Use standard 'disabled' prop to control state
                                             placeholder={loadingBoxes ? "Cargando Boxes..." : myBoxes.length === 0 ? "No tienes boxes registrados" : "Selecciona un Box"}
                                             required // Make selection mandatory if 'oficial' is chosen
                                         >
@@ -330,7 +331,6 @@ function CreateCompetitionPage() {
                                         _hover={{ borderColor: 'green.500' }}
                                         _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 1px var(--chakra-colors-green-500)' }}
                                         color="white"
-                                        // Removed the 'sx' prop which caused an error
                                         required // HTML5 validation attribute
                                         // Style to make date picker icon visible in dark mode
                                         colorScheme='green' // Attempts to color the picker, may vary by browser
@@ -435,7 +435,7 @@ function CreateCompetitionPage() {
                                     colorScheme="gray"
                                     flex="1"
                                     onClick={() => navigate('/')} // Navigate to home or maybe back? navigate(-1)
-                                    isDisabled={isLoading} // Correct usage of isDisabled
+                                    disabled={isLoading} // Corrected prop name
                                 >
                                     Cancelar
                                 </Button>
@@ -443,7 +443,7 @@ function CreateCompetitionPage() {
                                     type="submit"
                                     colorScheme="green"
                                     flex="1"
-                                    loading={isLoading} // Correct prop name
+                                    loading={isLoading} // Corrected prop name
                                     _hover={{
                                         transform: 'translateY(-2px)',
                                         shadow: 'lg'
@@ -462,4 +462,3 @@ function CreateCompetitionPage() {
 }
 
 export default CreateCompetitionPage;
-

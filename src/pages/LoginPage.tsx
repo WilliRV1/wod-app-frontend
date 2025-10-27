@@ -16,7 +16,7 @@ import {
   Text,
   Heading,
   Link,
-  Stack, // Import Stack if you use it for layout
+  // Stack, // Removed unused import
 } from "@chakra-ui/react";
 
 import { Field } from "@chakra-ui/react"; // Correct import for Field
@@ -286,7 +286,7 @@ function LoginPage() {
                   colorScheme="green"
                   size="lg"
                   mt={2}
-                  loading={isLoading} // Correct prop name
+                  loading={isLoading} // Corrected prop name
                   _hover={{ transform: "translateY(-2px)", shadow: "lg" }}
                   transition="all 0.2s"
                 >
@@ -338,4 +338,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-

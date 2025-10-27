@@ -74,7 +74,8 @@ function HomePage() {
   return (
     // Use Box for background and padding, VStack for stacking cards
     <Box w="100%" py={6}>
-        <VStack align="stretch" spacing={4}> {/* Add spacing between cards */}
+        {/* Corrected: Use 'gap' prop instead of 'spacing' */}
+        <VStack align="stretch" gap={4}> 
           {competitions.map((comp) => (
             <CompetitionCard
               key={comp._id}

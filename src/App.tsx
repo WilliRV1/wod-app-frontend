@@ -5,13 +5,15 @@ import LoginPage from './pages/LoginPage';
 import CompetitionDetailPage from "./pages/CompetitionDetailPage";
 import CreateCompetitionPage from './pages/CreateCompetitionPage'; // Import CreateCompetitionPage
 import CreateBoxPage from './pages/CreateBoxPage'; // <-- Import the new page
-import { ChakraProvider, defaultSystem, Box } from "@chakra-ui/react";
+import { ChakraProvider, Box } from "@chakra-ui/react"; // Removed defaultSystem
 import Navbar from './components/NavBar'; // Tu Navbar
 import { Toaster } from 'react-hot-toast';
+import customTheme from './theme'; // Import your custom theme
 
 function App() {
   return (
-    <ChakraProvider value={defaultSystem}>
+    // Provide your custom theme to ChakraProvider
+    <ChakraProvider theme={customTheme}>
 
       <Navbar />
 
@@ -22,7 +24,7 @@ function App() {
         minH="calc(100vh - 80px)" // Adjust 80px based on Navbar height
         pt="80px" // Same value as minH adjustment and Navbar height
         w="100%"
-        bg="gray.900" // Apply a background color if desired
+        // Background is now handled by theme's global styles
         color="white" // Default text color for children
       >
         {/* 3. Contenedor CENTRADO para tu contenido */}
@@ -50,15 +52,15 @@ function App() {
           // Default options
           duration: 5000,
           style: {
-            background: '#363636',
-            color: '#fff',
+            background: '#363636', // Use theme token like customTheme.colors.gray[700] if preferred
+            color: '#fff',       // Use theme token like customTheme.colors.gray[100] if preferred
           },
           // Options for specific types
           success: {
             duration: 3000,
             theme: {
-              primary: 'green',
-              secondary: 'black',
+              primary: 'green', // Or use customTheme.colors.wodAccent[500]
+              secondary: 'black', // Or use customTheme.colors.gray[900]
             },
           },
            error: {
