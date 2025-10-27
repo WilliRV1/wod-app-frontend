@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
+import { Link as RouterLink } from 'react-router-dom';
 
 
 
@@ -48,7 +49,7 @@ function Navbar() {
             >
                 {/* Logo */}
 
-                <Link href="/" fontSize="3xl" color={'white'}>
+                <Link as={RouterLink} to="/" fontSize="3xl" color={'white'} _hover={{ textDecoration: 'none' }}>
                 WOD-APP
                 </Link>                
                 

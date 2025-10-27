@@ -141,7 +141,7 @@ function CompetitionDetailPage() {
                 <Heading as="h1" size="2xl" textAlign="center" mb={4}>{competition.nombre}</Heading>
 
                 {/* Fecha y Lugar */}
-                <Box bg="gray.700" p={4} borderRadius="md">
+                <Box bg="gray.800" p={4} borderRadius="md">
                     <Text fontSize="lg"><strong>Fecha:</strong> {new Date(competition.fecha).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
                     <Text fontSize="lg"><strong>Lugar:</strong> {competition.lugar}</Text>
                     <Text fontSize="md" color="gray.400" mt={2}>
@@ -193,7 +193,7 @@ function CompetitionDetailPage() {
                     ) : (
                     <List.Root>
                         {competition.buscando_parejas.map((atleta: partner) => (
-                            <List.Item key={atleta._id} bg="gray.700" p={3} borderRadius="md">
+                            <List.Item key={atleta._id} bg="gray.800" p={3} borderRadius="md">
                                 <Text fontSize="lg" fontWeight="bold">{atleta.nombre}</Text>
                                 {atleta.nivel && (
                                     <Text fontSize="sm" color="gray.300">Nivel: {atleta.nivel}</Text>

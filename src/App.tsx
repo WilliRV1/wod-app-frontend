@@ -39,7 +39,7 @@ function App() {
       </Box>
       <Toaster toastOptions={{
           // Duración por defecto para todas las alertas
-          duration: 2000, // 3 segundos
+          duration: 2000, 
         }}/>
     </ChakraProvider>
   );

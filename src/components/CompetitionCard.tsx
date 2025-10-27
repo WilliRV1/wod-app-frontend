@@ -1,6 +1,6 @@
 import React from 'react';
 import { Heading, Text, Stack, Icon, Flex, Link, LinkBox } from '@chakra-ui/react';
-
+import { Link as RouterLink } from 'react-router-dom';
 
 
 // --- (Fix 1) ---
@@ -23,16 +23,20 @@ const CompetitionCard: React.FC<CompetitionCardProps> = ({ competition }) => {
 
   return (
     <LinkBox 
-      borderWidth="1px" 
-      borderRadius="lg" 
-      overflow="hidden" 
-      p={4} 
-      mb={4} 
-      bg="gray.700" 
-      borderColor="gray.600"
-    >
+  bg="brand.dark"
+  borderWidth="2px"
+  borderColor="brand.primary/20"
+  borderRadius="xl"
+  p={6}
+  transition="all 0.3s"
+  _hover={{
+    borderColor: 'brand.primary',
+    transform: 'translateY(-4px)',
+    shadow: 'xl'
+  }}
+>
 
-    <Link href= {`/competitions/${competition._id}`} variant="underline" colorPalette="teal" >
+    <Link as={RouterLink} to= {`/competitions/${competition._id}`} variant="underline" colorPalette="teal" >
     
    
       <Stack wordSpacing={2} textAlign="left" > 
