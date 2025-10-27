@@ -9,15 +9,15 @@ import CreateBoxPage from './pages/CreateBoxPage'; // <-- Import the new page
 import { ChakraProvider, Box } from "@chakra-ui/react";
 import Navbar from './components/NavBar'; // Tu Navbar
 import { Toaster } from 'react-hot-toast';
-// customTheme import is no longer directly used here, but keep it if other parts of the app import it
-// import customTheme from './theme';
+ 
+import customTheme from './theme';
 
 function App() {
   // Removed providerProps constant
 
   return (
     // Removed the incorrect theme prop / spread props
-    <ChakraProvider>
+    <ChakraProvider value="customTheme">
 
       <Navbar />
 
