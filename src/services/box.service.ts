@@ -22,7 +22,7 @@ export const createBox = async (boxData: any, token: string) => {
   }
 };
 
-export const getMyBoxes = async (token: string) => {
+export const getBoxes = async (token: string) => {
   try {
     const response = await axios.get(
       `${API_URL}/api/boxes`,
@@ -37,4 +37,21 @@ export const getMyBoxes = async (token: string) => {
     console.error('Error al obtener boxes:', error);
     throw error;
   }
+};
+
+export const getMyBoxes = async (token: string) => {
+    try {
+        // Cambia la URL a la nueva ruta protegida
+        const response = await axios.get(`${API_URL}/api/boxes/my/boxes`, {
+            headers: {
+                'Authorization': `Bearer ${token}` // Envía el token para autenticación
+            }
+        });
+        console.log("Respuesta de getMyBoxes:", response.data); // Para depuración
+        return response.data; // Debería devolver { boxes: [...] }
+    } catch (error) {
+        console.error("Error al obtener mis boxes:", error);
+        // Podrías manejar diferentes tipos de error aquí si es necesario
+        throw error;
+    }
 };
