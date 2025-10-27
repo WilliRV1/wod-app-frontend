@@ -1,13 +1,8 @@
-// src/components/Navbar.tsx
-import { Box, Flex, Button, Text, Spacer, Link } from '@chakra-ui/react';
+import { Box, Flex, Button, Text, Spacer } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
-import { Link as RouterLink } from 'react-router-dom';
-
-
-
 
 function Navbar() {
     const { currentUser, loadingAuth } = useAuth();
@@ -23,10 +18,7 @@ function Navbar() {
         }
     };
 
-   
-
     return (
-        // 1. CONTENEDOR EXTERIOR (FONDO NEGRO)
         <Box
             as="nav"
             bg="gray.800"
@@ -36,45 +28,64 @@ function Navbar() {
             top="0"
             zIndex="500"
             py={3}
+            borderBottom="1px solid"
+            borderColor="gray.700"
         >
-            {/* 2. CONTENEDOR INTERIOR (CONTENIDO CENTRADO) */}
             <Flex
                 w="100%"
-                
-                maxW="container.md" 
-           
+                maxW="container.lg" 
                 mx="auto"           
-                px={5} // El padding interno para que no se pegue a los bordes
+                px={5}
                 alignItems="center"
             >
                 {/* Logo */}
-
-                <Link as={RouterLink} to="/" fontSize="3xl" color={'white'} _hover={{ textDecoration: 'none' }}>
-                WOD-APP
-                </Link>                
-                
+                <Text 
+                    fontSize="2xl" 
+                    fontWeight="bold"
+                    color="green.400"
+                    cursor="pointer"
+                    onClick={() => navigate('/')}
+                    _hover={{ color: 'green.300' }}
+                >
+                    WOD-APP
+                </Text>
 
                 <Spacer />
 
-                {/* Bloque de Autenticación */}
+                {/* Autenticación */}
                 <Box>
                     {loadingAuth ? (
                         <Text>Cargando...</Text>
                     ) : currentUser ? (
-                        <Flex alignItems="center">
-                            <Text mr={4} display={{ base: 'none', md: 'block' }}>
-                                Hola, {currentUser.email}
+                        <Flex alignItems="center" gap={4}>
+                            <Text display={{ base: 'none', md: 'block' }}>
+                                {currentUser.email}
                             </Text>
-                            <Button colorScheme="red" size="sm" onClick={handleLogout}>
+                            <Button 
+                                colorPalette="red" 
+                                size="sm" 
+                                onClick={handleLogout}
+                                bg="brand.primary" color="white" size="lg" borderRadius="full" _hover={{ bg: 'brand.primary/80' }}
+                            >
                                 Logout
                             </Button>
                         </Flex>
                     ) : (
-                        <Flex>
-                            <Button size="sm" mr={2} onClick={ () =>  navigate ('/login')}> 
+                        <Flex gap={2}>
+                            <Button 
+                                size="sm" 
+                                onClick={() => navigate('/login')}
+                                colorPalette="green"
+                                bg="brand.primary" color="white" size="lg" borderRadius="full" _hover={{ bg: 'brand.primary/80' }}
+                            > 
                                 Login
                             </Button>
-                            <Button size="sm" variant="outline" colorScheme="blue">
+                            <Button 
+                                size="sm" 
+                                variant="outline" 
+                                colorPalette="green"
+                                bg="brand.primary" color="white" size="lg" borderRadius="full" _hover={{ bg: 'brand.primary/80' }}
+                            >
                                 Registrarse
                             </Button>
                         </Flex>

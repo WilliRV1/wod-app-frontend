@@ -136,12 +136,12 @@ function LoginPage() {
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 {message && <p style={{ color: 'green' }}>{message}</p>}
 
-                <button type="submit">
+                <button type="submit" bg="brand.primary" color="white" size="lg" borderRadius="full" _hover={{ bg: 'brand.primary/80' }}>
                     {isRegistering ? 'Registrarme' : 'Iniciar Sesión'}
                 </button>
             </form>
 
-            <button onClick={() => setIsRegistering(!isRegistering)}>
+            <button onClick={() => setIsRegistering(!isRegistering)} bg="brand.primary" color="white" size="lg" borderRadius="full" _hover={{ bg: 'brand.primary/80' }}>
                 {isRegistering ? '¿Ya tienes cuenta? Inicia Sesión' : '¿No tienes cuenta? Regístrate'}
             </button>
         </div>

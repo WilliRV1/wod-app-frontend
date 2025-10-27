@@ -1,10 +1,7 @@
 import React from 'react';
-import { Heading, Text, Stack, Icon, Flex, Link, LinkBox } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Heading, Text, Stack, Icon, Flex, Box } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
-
-// --- (Fix 1) ---
-// Exporta la interfaz para que HomePage pueda importarla
 export interface Competition {
   _id: string;
   nombre: string;
@@ -17,55 +14,57 @@ interface CompetitionCardProps {
 }
 
 const CompetitionCard: React.FC<CompetitionCardProps> = ({ competition }) => {
+  const navigate = useNavigate();
   const formattedDate = new Date(competition.fecha).toLocaleDateString('es-CO', {
     year: 'numeric', month: 'long', day: 'numeric',
   });
 
   return (
-    <LinkBox 
-  bg="brand.dark"
-  borderWidth="2px"
-  borderColor="brand.primary/20"
-  borderRadius="xl"
-  p={6}
-  transition="all 0.3s"
-  _hover={{
-    borderColor: 'brand.primary',
-    transform: 'translateY(-4px)',
-    shadow: 'xl'
-  }}
->
-
-    <Link as={RouterLink} to= {`/competitions/${competition._id}`} variant="underline" colorPalette="teal" >
-    
-   
-      <Stack wordSpacing={2} textAlign="left" > 
-        <Heading size="md" >{competition.nombre}</Heading>
+    <Box 
+      borderWidth="1px" 
+      borderRadius="lg" 
+      p={4} 
+      mb={4} 
+      bg="gray.800" 
+      borderColor="gray.700"
+      cursor="pointer"
+      onClick={() => navigate(`/competitions/${competition._id}`)}
+      transition="all 0.3s"
+      _hover={{
+        borderColor: 'green.500',
+        transform: 'translateY(-2px)',
+        shadow: 'lg'
+      }}
+    >
+      <Stack gap={2} textAlign="left"> 
+        <Heading size="md" color="green.400">{competition.nombre}</Heading>
         
-        <Flex alignItems="initial">
-          <Icon as={CalendarIcon} mr={2} color="green.300" /> 
+        <Flex alignItems="center" gap={2}>
+          <Icon color="green.300">
+            <CalendarIcon />
+          </Icon>
           <Text fontSize="sm" color="gray.300">{formattedDate}</Text>
         </Flex>
         
-        <Flex alignItems="initial">
-          <Icon as={LocationIcon} mr={2} color="green.300" />
+        <Flex alignItems="center" gap={2}>
+          <Icon color="green.300">
+            <LocationIcon />
+          </Icon>
           <Text fontSize="sm" color="gray.300">{competition.lugar}</Text>
         </Flex>
       </Stack>
-    </Link>
-    </LinkBox>
+    </Box>
   );
 }
 
-// --- Iconos Simples (Definidos aquí mismo) ---
-const CalendarIcon = (props: any) => (
-  <svg fill="currentColor" width="1em" height="1em" viewBox="0 0 20 20" {...props}>
+const CalendarIcon = () => (
+  <svg fill="currentColor" width="1em" height="1em" viewBox="0 0 20 20">
     <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
   </svg>
 );
 
-const LocationIcon = (props: any) => (
-  <svg fill="currentColor" width="1em" height="1em" viewBox="0 0 20 20" {...props}>
+const LocationIcon = () => (
+  <svg fill="currentColor" width="1em" height="1em" viewBox="0 0 20 20">
     <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
   </svg>
 );

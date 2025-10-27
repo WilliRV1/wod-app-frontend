@@ -182,7 +182,7 @@ function CompetitionDetailPage() {
                 </Box>
                 <Box>
                     <Heading as="h2" size="lg" mb={4}>Partner Finder</Heading>
-                     <Button onClick={handleJoinPartnerFinder} colorScheme="green" size="lg">
+                     <Button onClick={handleJoinPartnerFinder} colorScheme="green" size="lg" bg="brand.primary" color="white" size="lg" borderRadius="full" _hover={{ bg: 'brand.primary/80' }}>
                         ¡Unirme a la búsqueda!
                     </Button>
 
