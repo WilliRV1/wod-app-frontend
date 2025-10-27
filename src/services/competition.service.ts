@@ -4,7 +4,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 export const getAllCompetitions = async () => {
   try {
     // 1. Llama a axios.get() con la URL del endpoint
-    const response = await axios.get(`${API_URL}/competencias`);
+    const response = await axios.get(`${API_URL}/api/competencias`);
     console.log("Intentando llamar a:", URL);
 
  
