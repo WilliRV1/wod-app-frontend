@@ -2,8 +2,10 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/homepage';
 import LoginPage from './pages/LoginPage';
+import CompetitionDetailPage from "./pages/CompetitionDetailPage"
 import { ChakraProvider, defaultSystem, Box } from "@chakra-ui/react"; // Importa Box
 import Navbar from './components/NavBar'; // Tu Navbar
+import CompetitionCard from './components/CompetitionCard';
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/Login" element={<LoginPage />} />
+            <Route path="/competitions/:id" element={<CompetitionDetailPage />}/>
           </Routes>
         </Box>
       </Box>

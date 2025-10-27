@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, Heading, Text, Stack, Icon, Flex } from '@chakra-ui/react';
+import { Box, Heading, Text, Stack, Icon, Flex, Link, LinkBox } from '@chakra-ui/react';
+
+
 
 // --- (Fix 1) ---
 // Exporta la interfaz para que HomePage pueda importarla
@@ -20,7 +22,7 @@ const CompetitionCard: React.FC<CompetitionCardProps> = ({ competition }) => {
   });
 
   return (
-    <Box 
+    <LinkBox 
       borderWidth="1px" 
       borderRadius="lg" 
       overflow="hidden" 
@@ -29,21 +31,25 @@ const CompetitionCard: React.FC<CompetitionCardProps> = ({ competition }) => {
       bg="gray.700" 
       borderColor="gray.600"
     >
-      {/* Añadimos un espaciado al Stack */}
-      <Stack spacing={3}> 
-        <Heading size="md">{competition.nombre}</Heading>
+
+    <Link href= {`/competitions/${competition._id}`} variant="underline" colorPalette="teal" >
+    
+   
+      <Stack wordSpacing={2} textAlign="left" > 
+        <Heading size="md" >{competition.nombre}</Heading>
         
-        <Flex alignItems="center">
+        <Flex alignItems="initial">
           <Icon as={CalendarIcon} mr={2} color="green.300" /> 
           <Text fontSize="sm" color="gray.300">{formattedDate}</Text>
         </Flex>
         
-        <Flex alignItems="center">
+        <Flex alignItems="initial">
           <Icon as={LocationIcon} mr={2} color="green.300" />
           <Text fontSize="sm" color="gray.300">{competition.lugar}</Text>
         </Flex>
       </Stack>
-    </Box>
+    </Link>
+    </LinkBox>
   );
 }
 

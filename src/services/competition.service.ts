@@ -1,14 +1,27 @@
-import axios from 'axios'; // Asegúrate de importar axios
+import axios, { type AxiosRequestConfig } from 'axios'; // Asegúrate de importar axios
+const API_URL = 'http://localhost:5000/api';
 
 export const getAllCompetitions = async () => {
   try {
     // 1. Llama a axios.get() con la URL del endpoint
-    const response = await axios.get('http://localhost:5000/api/competencias');
+    const response = await axios.get(`${API_URL}/competencias`);
 
  
     return response.data;
   } catch (error) {
     console.error('Error al obtener competencias:', error);
+    throw error
+  }
+}
+
+export const getCompetitionById = async ( id: string ) => {
+  try{
+    const response = await axios.get(`${API_URL}/competencias/${id}`)
+
+    return response.data
+
+  }catch (error){
+    console.error (`Error al obtener competencia con id ${id}`, error)
     throw error
   }
 }
