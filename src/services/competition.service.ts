@@ -18,6 +18,7 @@ export const getAllCompetitions = async () => {
 export const getCompetitionById = async ( id: string ) => {
   try{
     const response = await axios.get(`${API_URL}/api/competencias/${id}`)
+    console.log("Intentando llamar a (detalle):", URL);
 
     return response.data
 
