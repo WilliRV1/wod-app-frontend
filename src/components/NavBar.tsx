@@ -1,9 +1,12 @@
 // src/components/Navbar.tsx
-import { Box, Flex, Button, Text, Spacer } from '@chakra-ui/react';
+import { Box, Flex, Button, Text, Spacer, Link, MenuItem } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
+
+
+
 
 function Navbar() {
     const { currentUser, loadingAuth } = useAuth();
@@ -18,6 +21,8 @@ function Navbar() {
             console.error("Error al hacer logout:", error);
         }
     };
+
+   
 
     return (
         // 1. CONTENEDOR EXTERIOR (FONDO NEGRO)
@@ -42,9 +47,11 @@ function Navbar() {
                 alignItems="center"
             >
                 {/* Logo */}
-                <Text fontSize="lg" fontWeight="bold">
-                    Mi App
-                </Text>
+
+                <Link href="/" fontSize="3xl" color={'white'}>
+                WOD-APP
+                </Link>                
+                
 
                 <Spacer />
 
@@ -63,7 +70,7 @@ function Navbar() {
                         </Flex>
                     ) : (
                         <Flex>
-                            <Button size="sm" mr={2}>
+                            <Button size="sm" mr={2} onClick={ () =>  navigate ('/login')}> 
                                 Login
                             </Button>
                             <Button size="sm" variant="outline" colorScheme="blue">

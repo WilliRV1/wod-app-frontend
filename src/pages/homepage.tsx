@@ -1,68 +1,82 @@
-import React, { useState, useEffect } from 'react'; // <-- Importa useState y useEffect
-import { getAllCompetitions } from '../services/competition.service'; // <-- Importa tu servicio
+import React, { useState, useEffect } from 'react';
+import { getAllCompetitions } from '../services/competition.service';
 
-// Definimos un tipo para saber cómo se ve una competencia 
-interface Competition {
-  _id: string;
-  nombre: string;
-  fecha: string; 
-  lugar: string;
- 
-}
+// --- (Fix 2) ---
+// Importa el componente 'default' (CompetitionCard)
+// y el tipo 'exportado' (Competition)
+import CompetitionCard, { type Competition } from "../components/CompetitionCard";
+
+// Importa los componentes de Chakra que necesitas para esta página
+import { VStack, Spinner, Text, Heading } from '@chakra-ui/react';
 
 function HomePage() {
-  // 1. Estado para guardar las competencias
-  const [competitions, setCompetitions] = useState<Competition[]>([]); // Empieza como un array vacío
-  // Estado para saber si estamos cargando
-  const [loading, setLoading] = useState<boolean>(true); 
-  // Estado para manejar errores
-  const [error, setError] = useState<string | null>(null); 
+  const [competitions, setCompetitions] = useState<Competition[]>([]);
+  // Añade un estado de carga
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 2. Efecto secundario para llamar a la API cuando el componente se monta
   useEffect(() => {
-    // Definimos una función async dentro del efecto
     const loadCompetitions = async () => {
       try {
-        setLoading(true); // Empezamos a cargar
-        setError(null); // Reseteamos errores
-        const data = await getAllCompetitions(); // Llamamos al servicio
-        setCompetitions(data.competitions); // Guardamos la lista en el estado
-      } catch (err) {
-        setError('Error al cargar las competencias.'); // Guardamos el error
-        console.error(err); 
+        const data = await getAllCompetitions();
+        
+        // --- (Fix 3: El más importante) ---
+        // Log para ver qué recibes REALMENTE
+        console.log("Datos RECIBIDOS de la API:", data);
+
+     
+        if (data && Array.isArray(data.competitions)) {
+          // Asignamos el array INTERNO (que tiene 2 elementos) al estado
+          setCompetitions(data.competitions);
+        } else {
+          // Si 'data' es null o 'data.competitions' no existe
+          console.warn("La API devolvió datos, pero no en el formato esperado.");
+          setCompetitions([]); 
+        }
+
+      } catch (error) {
+        console.error("Error al cargar las competiciones:", error);
+        setCompetitions([]); // <-- Asegura que sea un array en caso de error
       } finally {
-        setLoading(false); // Terminamos de cargar (con éxito o error)
+        // Quita la carga al terminar (con éxito o error)
+        setIsLoading(false);
       }
     };
 
-    loadCompetitions(); // Ejecutamos la función
-  }, []); // El array vacío [] significa: "ejecuta esto solo una vez al montar"
+    loadCompetitions();
+  }, []); // El array vacío [] asegura que se ejecute solo una vez
 
-  // 3. Renderizado condicional basado en el estado
-  if (loading) {
-    return <div>Cargando competencias... ⏳</div>;
+  // --- Lógica de Renderizado ---
+
+  // 1. Muestra Spinner mientras carga
+  if (isLoading) {
+    return (
+      <VStack justify="center" align="center" minHeight="80vh">
+        <Spinner size="xl" />
+        <Text>Cargando competiciones...</Text>
+      </VStack>
+    );
   }
 
-  if (error) {
-    return <div style={{ color: 'red' }}>{error} 😥</div>;
+  // 2. Muestra mensaje si, después de cargar, no hay nada
+  if (competitions.length === 0) {
+    return (
+      <VStack justify="center" align="center" minHeight="80vh">
+        <Heading size="md">No hay competiciones disponibles</Heading>
+        <Text>Inténtalo de nuevo más tarde.</Text>
+      </VStack>
+    );
   }
 
+  // 3. Muestra los datos si todo salió bien
   return (
-    <div>
-      <h2>Próximas Competencias 🏋️‍♀️</h2>
-      {competitions.length === 0 ? (
-        <p>No hay competencias disponibles por ahora.</p>
-      ) : (
-        <ul>
-          {/* Mapeamos el array de competencias para mostrar cada una */}
-          {competitions.map((comp) => (
-            <li key={comp._id}>
-              <strong>{comp.nombre}</strong> - {new Date(comp.fecha).toLocaleDateString()} en {comp.lugar}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <VStack align="stretch" p={4}>
+      {competitions.map((comp) => (
+        <CompetitionCard 
+          key={comp._id}
+          competition={comp} // <-- ¡Pasando la prop!
+        />
+      ))}
+    </VStack>
   );
 }
 

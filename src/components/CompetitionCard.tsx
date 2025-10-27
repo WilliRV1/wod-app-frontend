@@ -1,10 +1,9 @@
-// src/components/CompetitionCard.tsx
-import React from 'react'; // Importa React si usas React.FC
+import React from 'react';
 import { Box, Heading, Text, Stack, Icon, Flex } from '@chakra-ui/react';
-// import { CalendarIcon, LocationIcon } from './Icons'; // <-- ELIMINA ESTA LÍNEA
 
-// Interfaz para los datos de la competencia
-interface Competition {
+// --- (Fix 1) ---
+// Exporta la interfaz para que HomePage pueda importarla
+export interface Competition {
   _id: string;
   nombre: string;
   fecha: string;
@@ -30,19 +29,18 @@ const CompetitionCard: React.FC<CompetitionCardProps> = ({ competition }) => {
       bg="gray.700" 
       borderColor="gray.600"
     >
-      {/* Stack necesita 'spacing', no 'space' */}
-      <Stack spacing={2}> 
+      {/* Añadimos un espaciado al Stack */}
+      <Stack spacing={3}> 
         <Heading size="md">{competition.nombre}</Heading>
         
         <Flex alignItems="center">
-          {/* Usa el componente Icon directamente con el SVG como 'as' */}
           <Icon as={CalendarIcon} mr={2} color="green.300" /> 
           <Text fontSize="sm" color="gray.300">{formattedDate}</Text>
         </Flex>
         
         <Flex alignItems="center">
-           <Icon as={LocationIcon} mr={2} color="green.300" />
-           <Text fontSize="sm" color="gray.300">{competition.lugar}</Text>
+          <Icon as={LocationIcon} mr={2} color="green.300" />
+          <Text fontSize="sm" color="gray.300">{competition.lugar}</Text>
         </Flex>
       </Stack>
     </Box>
@@ -58,7 +56,7 @@ const CalendarIcon = (props: any) => (
 
 const LocationIcon = (props: any) => (
   <svg fill="currentColor" width="1em" height="1em" viewBox="0 0 20 20" {...props}>
-     <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
   </svg>
 );
 
