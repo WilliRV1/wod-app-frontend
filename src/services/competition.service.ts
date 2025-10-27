@@ -17,7 +17,7 @@ export const getAllCompetitions = async () => {
 
 export const getCompetitionById = async ( id: string ) => {
   try{
-    const response = await axios.get(`${API_URL}/competencias/${id}`)
+    const response = await axios.get(`${API_URL}/api/competencias/${id}`)
 
     return response.data
 
@@ -29,7 +29,7 @@ export const getCompetitionById = async ( id: string ) => {
 
 export const getPartnerFinder = async (competitionId: string, token: string) => {
   try{
-    const response = await axios.put(`${API_URL}/competencias/${competitionId}/join-partner`, {}, {
+    const response = await axios.put(`${API_URL}/api/competencias/${competitionId}/join-partner`, {}, {
       headers: {
         'Authorization': `Bearer ${token}`
       }

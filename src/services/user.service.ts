@@ -17,7 +17,7 @@ interface UserProfileData {
 export const registerUserProfile = async (userData: UserProfileData) => {
     try {
         // Hacemos el POST a tu endpoint /api/users
-        const response = await axios.post(`${API_URL}/users`, userData);
+        const response = await axios.post(`${API_URL}/api/users`, userData);
         return response.data; // Devuelve la respuesta del backend
     } catch (error) {
         console.error("Error al registrar perfil en backend:", error);
