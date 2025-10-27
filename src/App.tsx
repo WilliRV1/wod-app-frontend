@@ -5,34 +5,37 @@ import LoginPage from './pages/LoginPage';
 import CompetitionDetailPage from "./pages/CompetitionDetailPage";
 import CreateCompetitionPage from './pages/CreateCompetitionPage'; // Import CreateCompetitionPage
 import CreateBoxPage from './pages/CreateBoxPage'; // <-- Import the new page
-import { ChakraProvider, Box } from "@chakra-ui/react"; // Removed defaultSystem
+import { ChakraProvider, Box, type ChakraProviderProps } from "@chakra-ui/react"; // Import ChakraProviderProps if needed for explicit typing
 import Navbar from './components/NavBar'; // Tu Navbar
 import { Toaster } from 'react-hot-toast';
 import customTheme from './theme'; // Import your custom theme
 
 function App() {
+  // Cast the customTheme to 'any' temporarily if ChakraProviderProps doesn't match
+  // Or ensure customTheme structure matches expected Theme type
+  const providerProps: ChakraProviderProps = { theme: customTheme as any };
+
   return (
     // Provide your custom theme to ChakraProvider
-    <ChakraProvider theme={customTheme}>
+    // Using spread props or ensuring the type matches
+    <ChakraProvider {...providerProps}>
 
       <Navbar />
 
       {/* 2. Contenedor principal de la página */}
       <Box
         as="main"
-        // Use minHeight to ensure footer (if any) is pushed down, or content fills viewport
-        minH="calc(100vh - 80px)" // Adjust 80px based on Navbar height
-        pt="80px" // Same value as minH adjustment and Navbar height
+        minH="calc(100vh - 80px)"
+        pt="80px"
         w="100%"
-        // Background is now handled by theme's global styles
-        color="white" // Default text color for children
+        color="white"
       >
         {/* 3. Contenedor CENTRADO para tu contenido */}
         <Box
-          maxW="container.lg" // Consistent width with Navbar
-          mx="auto" // Centra el contenedor
-          px={5}    // Padding idéntico al del Navbar
-          pb={10} // Add some padding at the bottom
+          maxW="container.lg"
+          mx="auto"
+          px={5}
+          pb={10}
         >
           {/* Aquí viven tus páginas */}
           <Routes>
@@ -40,27 +43,28 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/competitions/:id" element={<CompetitionDetailPage />}/>
             <Route path="/create-competition" element={<CreateCompetitionPage />} />
-            {/* --- NUEVA RUTA para crear Box --- */}
             <Route path="/create-box" element={<CreateBoxPage />} />
             {/* Add other routes here */}
           </Routes>
         </Box>
       </Box>
       <Toaster
-        position="bottom-right" // Position the toasts
+        position="bottom-right"
         toastOptions={{
           // Default options
           duration: 5000,
           style: {
-            background: '#363636', // Use theme token like customTheme.colors.gray[700] if preferred
-            color: '#fff',       // Use theme token like customTheme.colors.gray[100] if preferred
+            background: '#363636',
+            color: '#fff',
           },
           // Options for specific types
           success: {
             duration: 3000,
-            theme: {
-              primary: 'green', // Or use customTheme.colors.wodAccent[500]
-              secondary: 'black', // Or use customTheme.colors.gray[900]
+            // Removed incorrect 'theme' property
+            // Styling is handled by the main 'style' or potentially iconTheme/className
+            iconTheme: { // Example styling for icon
+              primary: '#00D1A1', // Your wodAccent.500 color
+              secondary: '#0F1116', // Your gray.900 color
             },
           },
            error: {

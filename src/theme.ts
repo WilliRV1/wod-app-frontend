@@ -1,5 +1,4 @@
-// Removed incorrect imports for v3: extendBaseTheme, ChakraTheme, StyleFunctionProps
-import { extendTheme } from '@chakra-ui/react'; // Use extendTheme if needed for basic structure
+// Removed extendTheme import as it doesn't seem to be exported correctly in this version
 
 // 1. Configuración de estilo global (Dark Mode)
 const config = {
@@ -66,7 +65,6 @@ const fonts = {
 
 // 4. Estilos globales
 const styles = {
-    // Removed unused 'props' parameter
     global: () => ({
         body: {
             bg: 'gray.900',
@@ -82,22 +80,15 @@ const styles = {
     }),
 };
 
-// 5. Component Styles (Simplified or Removed for v3/Park UI basic usage)
-// NOTE: Deep component style overrides like this are less common in Park UI.
-// You often apply styles via props directly or through CSS variables/recipes.
-// If you specifically NEED component variants, the structure might differ.
-// Removing this section for now to fix build errors. Add back carefully if needed.
-// const components = { ... };
-
-// 6. Unir la configuración
-// Use extendTheme if you need the structure, otherwise just export the object.
-// We'll use extendTheme to maintain a familiar structure.
-const customTheme = extendTheme({
+// 5. Plain Theme Object
+// Exporting the object directly without extendTheme wrapper
+const customTheme = {
     config,
     colors,
     fonts,
     styles,
-    // components, // Removed components section for now
-});
+    // Add components section here ONLY if needed and structured correctly for v3
+};
 
 export default customTheme;
+

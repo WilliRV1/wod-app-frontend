@@ -90,8 +90,8 @@ function CreateBoxPage() {
 
                     <form onSubmit={handleSubmit}>
                         <VStack gap={5}>
-                            {/* Use Field components instead of FormControl */}
-                            <Field.Root w="100%" isRequired>
+                            {/* Corrected: Use 'required' prop instead of 'isRequired' */}
+                            <Field.Root w="100%" required>
                                 <Field.Label color="gray.300">
                                     Nombre del Box <Text as="span" color="red.500">*</Text>
                                 </Field.Label>
@@ -105,12 +105,8 @@ function CreateBoxPage() {
                                     _hover={{ borderColor: 'green.500' }}
                                     _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 1px var(--chakra-colors-green-500)' }}
                                     color="white"
-                                    required // HTML5 validation
+                                    required // HTML5 validation also helps
                                 />
-                                {/* Example of HelperText if needed */}
-                                {/* <Field.HelperText color="gray.500">Este será el nombre público de tu Box.</Field.HelperText> */}
-                                {/* Example of ErrorText if needed */}
-                                {/* <Field.ErrorText color="red.400">El nombre es obligatorio.</Field.ErrorText> */}
                             </Field.Root>
 
                             <Field.Root w="100%">
@@ -128,13 +124,14 @@ function CreateBoxPage() {
                                 />
                             </Field.Root>
 
+                            {/* Corrected: Use 'loading' prop instead of 'isLoading' */}
                             <Button
                                 type="submit"
                                 colorScheme="green"
                                 size="lg"
                                 width="100%"
                                 mt={4}
-                                isLoading={isLoading}
+                                loading={isLoading}
                                 _hover={{
                                     transform: 'translateY(-2px)',
                                     shadow: 'lg'
@@ -150,7 +147,7 @@ function CreateBoxPage() {
                                  width="100%"
                                  mt={2}
                                  onClick={() => navigate(-1)} // Go back to previous page
-                                 disabled={isLoading}
+                                 disabled={isLoading} // Correct: use 'disabled'
                              >
                                  Cancelar
                              </Button>
@@ -163,4 +160,3 @@ function CreateBoxPage() {
 }
 
 export default CreateBoxPage;
-
