@@ -1,123 +1,89 @@
 import { useState, useEffect } from 'react';
 import { getAllCompetitions } from '../services/competition.service';
 import CompetitionCard, { type Competition } from "../components/CompetitionCard";
-import { 
-    VStack, 
-    Spinner, 
-    Text, 
-    Heading, 
-    Box, 
-    Container,
-    Stack,
-    Badge
-} from '@chakra-ui/react';
+import { VStack, Spinner, Text, Heading, Box } from '@chakra-ui/react'; // Import Box
 
 function HomePage() {
-    const [competitions, setCompetitions] = useState<Competition[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+  const [competitions, setCompetitions] = useState<Competition[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null); // Add error state
 
-    useEffect(() => {
-        const loadCompetitions = async () => {
-            try {
-                const data = await getAllCompetitions();
-                console.log("Datos RECIBIDOS de la API:", data);
+  useEffect(() => {
+    const loadCompetitions = async () => {
+      setIsLoading(true); // Ensure loading is true at the start
+      setError(null); // Clear previous errors
+      try {
+        const data = await getAllCompetitions();
+        console.log("Datos RECIBIDOS de la API:", data);
 
-                if (data && Array.isArray(data.competitions)) {
-                    setCompetitions(data.competitions);
-                } else {
-                    console.warn("La API devolvió datos en formato inesperado.");
-                    setCompetitions([]);
-                }
-            } catch (error) {
-                console.error("Error al cargar las competiciones:", error);
-                setCompetitions([]);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+        if (data && Array.isArray(data.competitions)) {
+          setCompetitions(data.competitions);
+        } else {
+          console.warn("La API devolvió datos, pero no en el formato esperado.");
+          setCompetitions([]);
+          setError("No se encontraron competiciones."); // Set error if format is wrong
+        }
 
-        loadCompetitions();
-    }, []);
+      } catch (err) {
+        console.error("Error al cargar las competiciones:", err);
+        setCompetitions([]);
+        setError("Error al cargar las competiciones. Inténtalo más tarde."); // Set specific error message
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // Loading State
-    if (isLoading) {
-        return (
-            <Container centerContent minHeight="80vh" display="flex" alignItems="center">
-                <VStack gap={4}>
-                    <Spinner 
-                        size="xl" 
-                        color="green.400" 
-                        thickness="4px"
-                    />
-                    <Text color="gray.400" fontSize="lg">
-                        Cargando competiciones...
-                    </Text>
-                </VStack>
-            </Container>
-        );
-    }
+    loadCompetitions();
+  }, []);
 
-    // Empty State
-    if (competitions.length === 0) {
-        return (
-            <Container centerContent minHeight="80vh" display="flex" alignItems="center">
-                <VStack gap={4} textAlign="center">
-                    <Box fontSize="6xl">📅</Box>
-                    <Heading size="xl" color="white">
-                        No hay competiciones disponibles
-                    </Heading>
-                    <Text color="gray.400" fontSize="lg">
-                        Las próximas competiciones aparecerán aquí pronto.
-                    </Text>
-                    <Text color="gray.500" fontSize="sm">
-                        Inténtalo de nuevo más tarde.
-                    </Text>
-                </VStack>
-            </Container>
-        );
-    }
+  // --- Renderizado Condicional ---
 
-    // Main Content
+  if (isLoading) {
     return (
-        <Container maxW="4xl" py={8}>
-            <Stack gap={6}>
-                {/* Header Section */}
-                <Box textAlign="center" mb={4}>
-                    <Heading 
-                        as="h1" 
-                        size="3xl" 
-                        color="white" 
-                        mb={3}
-                    >
-                        Próximas Competiciones 🏆
-                    </Heading>
-                    <Text color="gray.400" fontSize="lg">
-                        Encuentra y únete a las mejores competiciones de CrossFit
-                    </Text>
-                    <Badge 
-                        colorScheme="green" 
-                        fontSize="md" 
-                        px={3} 
-                        py={1} 
-                        mt={3}
-                        borderRadius="full"
-                    >
-                        {competitions.length} {competitions.length === 1 ? 'Competición' : 'Competiciones'} Disponibles
-                    </Badge>
-                </Box>
-
-                {/* Competitions List */}
-                <VStack align="stretch" gap={4}>
-                    {competitions.map((comp) => (
-                        <CompetitionCard 
-                            key={comp._id}
-                            competition={comp}
-                        />
-                    ))}
-                </VStack>
-            </Stack>
-        </Container>
+      <VStack justify="center" align="center" minHeight="80vh">
+        {/* Correct Spinner usage */}
+        <Spinner
+          size="xl"
+          color="green.400"
+          // Removed thickness prop
+        />
+        <Text mt={4} color="gray.400">Cargando competiciones...</Text>
+      </VStack>
     );
+  }
+
+  if (error) { // Display error message if loading failed
+       return (
+           <VStack justify="center" align="center" minHeight="80vh">
+               <Heading size="md" color="red.400">Error</Heading>
+               <Text color="gray.400">{error}</Text>
+           </VStack>
+       );
+  }
+
+  if (competitions.length === 0) { // Message if no competitions found (but no error)
+    return (
+      <VStack justify="center" align="center" minHeight="80vh">
+        <Heading size="md" color="gray.400">No hay competiciones disponibles</Heading>
+        <Text color="gray.500">Vuelve a revisar más tarde.</Text>
+      </VStack>
+    );
+  }
+
+  // Display competitions
+  return (
+    // Use Box for background and padding, VStack for stacking cards
+    <Box w="100%" py={6}>
+        <VStack align="stretch" spacing={4}> {/* Add spacing between cards */}
+          {competitions.map((comp) => (
+            <CompetitionCard
+              key={comp._id}
+              competition={comp}
+            />
+          ))}
+        </VStack>
+    </Box>
+  );
 }
 
 export default HomePage;
