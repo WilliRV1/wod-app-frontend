@@ -3,13 +3,9 @@ import { useParams } from 'react-router-dom';
 import { getCompetitionById, getPartnerFinder } from '../services/competition.service'; 
 import { ProgressCircle } from "@chakra-ui/react"
 import {
-    Container, Heading, Text, Box, Alert, 
-    Button, // <-- 1. AÑADE ESTA IMPORTACIÓN
-    Tag, Stack, List, ListItem, 
-     
+    Container, Heading, Text, Box, Alert, 
+    Button, Tag, Stack, List, Card, Badge, Flex
 } from '@chakra-ui/react';
-import { Icon } from "@chakra-ui/react"
-import { Flex } from '@chakra-ui/react';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
 
@@ -34,19 +30,14 @@ interface partner {
 }
 
 function CompetitionDetailPage() {
-    // 1. Obtener el ID de la URL
-
     const { id } = useParams<{ id: string }>();
-    const {currentUser}= useAuth();
+    const { currentUser } = useAuth();
 
-
-
-    // 2. Estados para guardar datos, carga y error
     const [competition, setCompetition] = useState<Competition | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [joiningPartner, setJoiningPartner] = useState(false);
 
-    // 3. useEffect para buscar los datos cuando la página carga (o si el 'id' cambia)
     useEffect(() => {
         if (!id) {
             setError("No se proporcionó un ID de competencia.");
@@ -58,8 +49,8 @@ function CompetitionDetailPage() {
             try {
                 setLoading(true);
                 setError(null);
-                const data = await getCompetitionById(id); // Llama al servicio con el ID de la URL
-                setCompetition(data.competition); // Asumiendo que tu API devuelve { competition: {...} }
+                const data = await getCompetitionById(id);
+                setCompetition(data.competition);
             } catch (err) {
                 setError('Error al cargar la competencia.');
                 console.error(err);
@@ -69,46 +60,7 @@ function CompetitionDetailPage() {
         };
 
         loadCompetition();
-    }, [id]); // Se vuelve a ejecutar si el 'id' cambia
-
-    // --- Renderizado Condicional ---
-    if (loading) {
-        return (
-            <Container centerContent py={10}>   
-            <ProgressCircle.Root value={null} size="sm" color="green.300" >
-                <ProgressCircle.Circle>
-                    <ProgressCircle.Track />
-                     <ProgressCircle.Range />
-                </ProgressCircle.Circle>
-            </ProgressCircle.Root>
-                <Text mt={4}>Cargando competencia...</Text>
-            </Container>
-        );
-    }
-
-    if (error) {
-        return (
-            <Container py={10}>
-                <Alert.Root status="error">
-                    <Alert.Indicator />
-                    <Alert.Title> {error} </Alert.Title>
-                     
-                </Alert.Root>
-            </Container>
-        );
-    }
-
-    if (!competition) {
-        return (
-            <Container py={10}>
-                <Alert.Root status="warning">
-                    <Alert.Indicator />
-                    <Alert.Title> No se encontró la competencia. </Alert.Title>
-                </Alert.Root>
-            </Container>
-        );
-    }
-
+    }, [id]);
 
     const handleJoinPartnerFinder = async () => {
         if (!currentUser) {
@@ -119,95 +71,257 @@ function CompetitionDetailPage() {
         if (!id) return;
 
         try {
-            const token = await currentUser.getIdToken(); // Obtiene el token de Firebase
-            const data = await getPartnerFinder(id, token); // Llama al servicio
+            setJoiningPartner(true);
+            const token = await currentUser.getIdToken();
+            const data = await getPartnerFinder(id, token);
             
-            // Actualiza el estado local con la respuesta del backend
             setCompetition(data.competition); 
-            
             toast.success("¡Te has unido! Ahora apareces en la lista.");
 
         } catch (err) {
             toast.error("Error: No se pudo unir a la lista.");
             console.error(err);
+        } finally {
+            setJoiningPartner(false);
         }
-        }
-    
-    // --- Renderizado de los Detalles ---
+    }
+
+    // Loading State
+    if (loading) {
+        return (
+            <Container centerContent py={20}>   
+                <ProgressCircle.Root value={null} size="lg" colorPalette="green">
+                    <ProgressCircle.Circle>
+                        <ProgressCircle.Track />
+                        <ProgressCircle.Range />
+                    </ProgressCircle.Circle>
+                </ProgressCircle.Root>
+                <Text mt={4} color="gray.400" fontSize="lg">Cargando competencia...</Text>
+            </Container>
+        );
+    }
+
+    // Error State
+    if (error) {
+        return (
+            <Container py={10}>
+                <Alert.Root status="error" bg="red.900" borderColor="red.600" borderWidth="1px">
+                    <Alert.Indicator />
+                    <Alert.Title color="white">{error}</Alert.Title>
+                </Alert.Root>
+            </Container>
+        );
+    }
+
+    // Not Found State
+    if (!competition) {
+        return (
+            <Container py={10}>
+                <Alert.Root status="warning" bg="yellow.900" borderColor="yellow.600" borderWidth="1px">
+                    <Alert.Indicator />
+                    <Alert.Title color="white">No se encontró la competencia.</Alert.Title>
+                </Alert.Root>
+            </Container>
+        );
+    }
+
+    // Main Content
     return (
-        <Container py={6}>
-            <Stack>
-                {/* Título Principal */}
-                <Heading as="h1" size="2xl" textAlign="center" mb={4}>{competition.nombre}</Heading>
+        <Container maxW="4xl" py={8}>
+            <Stack gap={6}>
+                {/* Hero Section */}
+                <Box 
+                    bg="gray.800" 
+                    p={8} 
+                    borderRadius="xl" 
+                    borderWidth="1px" 
+                    borderColor="gray.600"
+                    bgGradient="linear(to-br, gray.800, gray.900)"
+                >
+                    <Heading 
+                        as="h1" 
+                        size="3xl" 
+                        mb={4}
+                        color="white"
+                        textAlign="center"
+                    >
+                        {competition.nombre}
+                    </Heading>
 
-                {/* Fecha y Lugar */}
-                <Box bg="gray.700" p={4} borderRadius="md">
-                    <Text fontSize="lg"><strong>Fecha:</strong> {new Date(competition.fecha).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
-                    <Text fontSize="lg"><strong>Lugar:</strong> {competition.lugar}</Text>
-                    <Text fontSize="md" color="gray.400" mt={2}>
-                        {/* Muestra quién lo organiza */}
-                        {competition.organizador ? `Organizado por: ${competition.organizador.nombre}` : (competition.creador ? `Evento de comunidad por: ${competition.creador.nombre}` : '')}
-                    </Text>
-                </Box>
-
-                {/* Descripción */}
-                <Box>
-                    <Heading as="h2" size="lg" mb={2}>Descripción</Heading>
-                    <Text>{competition.descripcion || "No hay descripción disponible."}</Text>
-                </Box>
-
-                {/* Categorías */}
-                <Box>
-                    <Heading as="h2" size="lg" mb={2}>Categorías</Heading>
-                    <Flex wrap="wrap">
-                        {competition.categorias.map((categoria) => (
-                            <Tag.Root key={categoria} size="lg" colorScheme="green" mr={2} mb={2}>{categoria}</Tag.Root>
-                        ))}
+                    <Flex 
+                        justify="center" 
+                        align="center" 
+                        gap={4} 
+                        flexWrap="wrap"
+                        color="gray.300"
+                        fontSize="lg"
+                    >
+                        <Badge colorScheme="green" fontSize="md" px={3} py={1}>
+                            📅 {new Date(competition.fecha).toLocaleDateString('es-CO', { 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                            })}
+                        </Badge>
+                        <Badge colorScheme="blue" fontSize="md" px={3} py={1}>
+                            📍 {competition.lugar}
+                        </Badge>
                     </Flex>
+
+                    {(competition.organizador || competition.creador) && (
+                        <Text 
+                            fontSize="sm" 
+                            color="gray.400" 
+                            mt={4}
+                            textAlign="center"
+                        >
+                            {competition.organizador 
+                                ? `Organizado por: ${competition.organizador.nombre}` 
+                                : `Evento de comunidad por: ${competition.creador?.nombre}`
+                            }
+                        </Text>
+                    )}
                 </Box>
+
+                {/* Description */}
+                <Card.Root bg="gray.800" borderColor="gray.600">
+                    <Card.Header>
+                        <Heading size="xl" color="green.400">📝 Descripción</Heading>
+                    </Card.Header>
+                    <Card.Body>
+                        <Text color="gray.300" fontSize="md" lineHeight="1.8">
+                            {competition.descripcion || "No hay descripción disponible."}
+                        </Text>
+                    </Card.Body>
+                </Card.Root>
+
+                {/* Categories */}
+                <Card.Root bg="gray.800" borderColor="gray.600">
+                    <Card.Header>
+                        <Heading size="xl" color="green.400">🏆 Categorías</Heading>
+                    </Card.Header>
+                    <Card.Body>
+                        <Flex wrap="wrap" gap={3}>
+                            {competition.categorias.map((categoria) => (
+                                <Tag.Root 
+                                    key={categoria} 
+                                    size="lg" 
+                                    colorScheme="green"
+                                >
+                                    {categoria}
+                                </Tag.Root>
+                            ))}
+                        </Flex>
+                    </Card.Body>
+                </Card.Root>
 
                 {/* WODs */}
-                <Box>
-                    <Heading as="h2" size="lg" mb={2}>WODs</Heading>
-                    <Box as={"ul"} listStyleType="circle">
-                        {competition.wods.map((wod, index) => (
-                            <ListItem key={index}>
-                                <Icon size="lg" color="green.500">
-                                      <Icon name="check-circle" size="md" />
-                                </Icon>
-                                {wod}
-                            </ListItem>
-                        ))}
-                    </Box>
-                </Box>
-                <Box>
-                    <Heading as="h2" size="lg" mb={4}>Partner Finder</Heading>
-                     <Button onClick={handleJoinPartnerFinder} colorScheme="green" size="lg">
-                        ¡Unirme a la búsqueda!
-                    </Button>
+                <Card.Root bg="gray.800" borderColor="gray.600">
+                    <Card.Header>
+                        <Heading size="xl" color="green.400">💪 WODs</Heading>
+                    </Card.Header>
+                    <Card.Body>
+                        <List.Root gap={3}>
+                            {competition.wods.map((wod, index) => (
+                                <List.Item 
+                                    key={index}
+                                    color="gray.300"
+                                    fontSize="md"
+                                    bg="gray.700"
+                                    p={3}
+                                    borderRadius="md"
+                                >
+                                    <Text>
+                                        <Text as="span" color="green.400" fontWeight="bold">
+                                            WOD {index + 1}:
+                                        </Text>{' '}
+                                        {wod}
+                                    </Text>
+                                </List.Item>
+                            ))}
+                        </List.Root>
+                    </Card.Body>
+                </Card.Root>
 
-                    {/* La lista que muestra los resultados */}
-                    <Heading as="h3" size="md" mb={3}>Atletas Buscando Pareja:</Heading>
-                    {(!competition.buscando_parejas || competition.buscando_parejas.length === 0) ? (
-                        <Text>Nadie se ha unido a la búsqueda todavía. ¡Sé el primero!</Text>
-                    ) : (
-                    <List.Root>
-                        {competition.buscando_parejas.map((atleta: partner) => (
-                            <List.Item key={atleta._id} bg="gray.700" p={3} borderRadius="md">
-                                <Text fontSize="lg" fontWeight="bold">{atleta.nombre}</Text>
-                                {atleta.nivel && (
-                                    <Text fontSize="sm" color="gray.300">Nivel: {atleta.nivel}</Text>
-                                     )}
-                                    </List.Item>
-                                ))}
-                                </List.Root>
-                            )}
-                </Box>
-                
+                {/* Partner Finder */}
+                <Card.Root bg="gray.800" borderColor="gray.600">
+                    <Card.Header>
+                        <Heading size="xl" color="green.400">🤝 Partner Finder</Heading>
+                    </Card.Header>
+                    <Card.Body>
+                        <Stack gap={4}>
+                            <Text color="gray.300" fontSize="md">
+                                ¿Buscas pareja para competir? ¡Únete a la lista y conecta con otros atletas!
+                            </Text>
+
+                            <Button 
+                                onClick={handleJoinPartnerFinder} 
+                                colorScheme="green" 
+                                size="lg"
+                                width={{ base: 'full', md: 'auto' }}
+                                loading={joiningPartner}
+                            >
+                                🔥 ¡Unirme a la búsqueda!
+                            </Button>
+
+                            <Box mt={4}>
+                                <Heading as="h3" size="lg" mb={3} color="gray.200">
+                                    Atletas Buscando Pareja:
+                                </Heading>
+                                
+                                {(!competition.buscando_parejas || competition.buscando_parejas.length === 0) ? (
+                                    <Box 
+                                        bg="gray.700" 
+                                        p={6} 
+                                        borderRadius="md" 
+                                        textAlign="center"
+                                        borderWidth="2px"
+                                        borderStyle="dashed"
+                                        borderColor="gray.600"
+                                    >
+                                        <Text color="gray.400" fontSize="md">
+                                            Nadie se ha unido todavía. ¡Sé el primero! 🚀
+                                        </Text>
+                                    </Box>
+                                ) : (
+                                    <Stack gap={3}>
+                                        {competition.buscando_parejas.map((atleta: partner) => (
+                                            <Box 
+                                                key={atleta._id} 
+                                                bg="gray.700" 
+                                                p={4} 
+                                                borderRadius="md"
+                                                borderWidth="1px"
+                                                borderColor="gray.600"
+                                                _hover={{ 
+                                                    borderColor: 'green.400',
+                                                    transform: 'translateX(4px)',
+                                                    transition: 'all 0.2s'
+                                                }}
+                                            >
+                                                <Flex justify="space-between" align="center">
+                                                    <Box>
+                                                        <Text fontSize="lg" fontWeight="bold" color="white">
+                                                            {atleta.nombre}
+                                                        </Text>
+                                                        {atleta.nivel && (
+                                                            <Badge colorScheme="blue" mt={1}>
+                                                                Nivel: {atleta.nivel}
+                                                            </Badge>
+                                                        )}
+                                                    </Box>
+                                                </Flex>
+                                            </Box>
+                                        ))}
+                                    </Stack>
+                                )}
+                            </Box>
+                        </Stack>
+                    </Card.Body>
+                </Card.Root>
             </Stack>
         </Container>
     );
 }
 
 export default CompetitionDetailPage;
-
