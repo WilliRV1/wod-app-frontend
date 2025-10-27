@@ -3,21 +3,19 @@ import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/homepage';
 import LoginPage from './pages/LoginPage';
 import CompetitionDetailPage from "./pages/CompetitionDetailPage";
-import CreateCompetitionPage from './pages/CreateCompetitionPage'; // Import CreateCompetitionPage
-import CreateBoxPage from './pages/CreateBoxPage'; // <-- Import the new page
-// Removed ChakraProviderProps import, not needed if not passing theme prop
+import CreateCompetitionPage from './pages/CreateCompetitionPage'; 
+import CreateBoxPage from './pages/CreateBoxPage'; 
 import { ChakraProvider, Box } from "@chakra-ui/react";
-import Navbar from './components/NavBar'; // Tu Navbar
+import Navbar from './components/NavBar'; 
 import { Toaster } from 'react-hot-toast';
  
-import customTheme from './theme';
 
 function App() {
   // Removed providerProps constant
 
   return (
     // Removed the incorrect theme prop / spread props
-    <ChakraProvider value="customTheme">
+    <ChakraProvider value={undefined}>
 
       <Navbar />
 
