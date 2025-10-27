@@ -1,0 +1,27 @@
+/* Estilos globales */
+html {
+  background-color: #1a202c !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1a202c !important;
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  background-color: #1a202c !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Asegurar que todos los contenedores de Chakra respeten el fondo */
+.chakra-portal,
+.chakra-provider {
+  background-color: transparent !important;
+}

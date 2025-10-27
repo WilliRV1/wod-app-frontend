@@ -2,7 +2,9 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/homepage';
 import LoginPage from './pages/LoginPage';
-import CompetitionDetailPage from "./pages/CompetitionDetailPage"
+import CompetitionDetailPage from "./pages/CompetitionDetailPage";
+import CreateCompetitionPage from "./pages/CreateCompetitionPage";
+import CreateBoxPage from "./pages/CreateBoxPage";
 import { ChakraProvider, defaultSystem, Box } from "@chakra-ui/react"; 
 import Navbar from './components/NavBar';
 import { Toaster } from 'react-hot-toast';
@@ -10,38 +12,37 @@ import { Toaster } from 'react-hot-toast';
 function App() {
   return (
     <ChakraProvider value={defaultSystem}>
-      <Box minH="100vh" bg="gray.900" color="white">
-        <Navbar />
+      
+      <Navbar />
 
+      {/* Contenedor principal de la página */}
+      <Box
+        as="main"
+        pt="80px"
+        w="100%"
+        bg="gray.900"
+        minH="100vh"
+      >
+        {/* Contenedor CENTRADO para tu contenido */}
         <Box
-          as="main"
-          pt="80px"
-          w="100%"
+          maxW="container.lg"
+          mx="auto"
+          px={5}
         >
-          <Box
-            maxW="container.lg"
-            mx="auto"
-            px={5}
-          >
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/Login" element={<LoginPage />} />
-              <Route path="/competitions/:id" element={<CompetitionDetailPage />}/>
-            </Routes>
-          </Box>
+          {/* Rutas */}
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/competitions/:id" element={<CompetitionDetailPage />}/>
+            <Route path="/create-competition" element={<CreateCompetitionPage />}/>
+            <Route path="/create-box" element={<CreateBoxPage />}/>
+          </Routes>
         </Box>
       </Box>
       
-      <Toaster 
-        position="top-center"
-        toastOptions={{
-          duration: 2000,
-          style: {
-            background: '#1A202C',
-            color: '#fff',
-          },
-        }}
-      />
+      <Toaster toastOptions={{
+        duration: 2000,
+      }}/>
     </ChakraProvider>
   );
 }

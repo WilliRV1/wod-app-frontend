@@ -1,24 +1,17 @@
-import { createSystem, defaultConfig } from "@chakra-ui/react"
-
-const customConfig = {
-  theme: {
-    tokens: {
-      colors: {
-        brand: {
-          50: { value: '#e6f9f5' },
-          100: { value: '#b3ede0' },
-          200: { value: '#80e1cb' },
-          300: { value: '#4dd5b6' },
-          400: { value: '#26c9a1' },
-          500: { value: '#00b894' },
-          600: { value: '#00a080' },
-          700: { value: '#00886b' },
-          800: { value: '#006b54' },
-          900: { value: '#004d3d' },
-        }
-      }
-    }
-  }
+/* Estilos globales */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1a202c; /* gray.900 de Chakra */
+  color: #ffffff;
+  min-height: 100vh;
 }
 
-export const system = createSystem(defaultConfig, customConfig)
+#root {
+  min-height: 100vh;
+  background-color: #1a202c;
+}
+
+* {
+  box-sizing: border-box;
+}

@@ -1,4 +1,5 @@
-import { Box, Flex, Button, Text, Spacer } from '@chakra-ui/react';
+// src/components/Navbar.tsx
+import { Box, Flex, Button, Text, Spacer, Link } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../firebase';
@@ -21,70 +22,184 @@ function Navbar() {
     return (
         <Box
             as="nav"
-            bg="gray.800"
+            bg="gray.900"
             color="white"
             w="100%"
             position="fixed"
             top="0"
             zIndex="500"
-            py={3}
-            borderBottom="1px solid"
-            borderColor="gray.700"
+            borderBottomWidth="1px"
+            borderColor="gray.800"
+            shadow="lg"
         >
             <Flex
                 w="100%"
-                maxW="container.lg" 
-                mx="auto"           
+                maxW="container.md"
+                mx="auto"
                 px={5}
+                py={4}
                 alignItems="center"
             >
-                {/* Logo */}
-                <Text 
+                {/* Logo/Brand */}
+                <Link 
+                    href="/" 
                     fontSize="2xl" 
                     fontWeight="bold"
-                    color="green.400"
-                    cursor="pointer"
-                    onClick={() => navigate('/')}
-                    _hover={{ color: 'green.300' }}
+                    color="white"
+                    _hover={{ 
+                        textDecoration: 'none',
+                        color: 'green.400',
+                        transform: 'scale(1.05)'
+                    }}
+                    transition="all 0.2s"
+                    display="flex"
+                    alignItems="center"
+                    gap={2}
                 >
-                    WOD-APP
-                </Text>
+                    <Box
+                        as="span"
+                        bgGradient="to-r"
+                        gradientFrom="green.400"
+                        gradientTo="green.600"
+                        bgClip="text"
+                        fontWeight="extrabold"
+                    >
+                        WOD
+                    </Box>
+                    <Box as="span" color="white">
+                        APP
+                    </Box>
+                </Link>
 
                 <Spacer />
 
-                {/* Autenticación */}
+                {/* Auth Section */}
                 <Box>
                     {loadingAuth ? (
-                        <Text>Cargando...</Text>
+                        <Text fontSize="sm" color="gray.400">Cargando...</Text>
                     ) : currentUser ? (
-                        <Flex alignItems="center" gap={4}>
-                            <Text display={{ base: 'none', md: 'block' }}>
-                                {currentUser.email}
-                            </Text>
-                            <Button 
-                                colorPalette="red" 
-                                size="sm" 
-                                onClick={handleLogout}
-                                bg="brand.primary" color="white" size="lg" borderRadius="full" _hover={{ bg: 'brand.primary/80' }}
+                        <Flex alignItems="center" gap={3}>
+                            {/* Crear Competencia Button */}
+                            <Button
+                                size="sm"
+                                colorScheme="green"
+                                display={{ base: 'none', md: 'flex' }}
+                                onClick={() => {
+                                    console.log("Navegando a /create-competition");
+                                    navigate('/create-competition');
+                                }}
+                                _hover={{ 
+                                    transform: 'translateY(-2px)',
+                                    shadow: 'lg'
+                                }}
+                                transition="all 0.2s"
                             >
-                                Logout
+                                + Crear
+                            </Button>
+
+                            {/* Perfil Button */}
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                colorScheme="gray"
+                                color="gray.300"
+                                borderColor="gray.600"
+                                display={{ base: 'none', sm: 'flex' }}
+                                _hover={{ 
+                                    bg: 'gray.800',
+                                    borderColor: 'green.500',
+                                    color: 'white',
+                                    transform: 'translateY(-2px)'
+                                }}
+                                transition="all 0.2s"
+                            >
+                                Perfil
+                            </Button>
+
+                            {/* Avatar/User Badge */}
+                            <Flex 
+                                alignItems="center" 
+                                gap={2}
+                                cursor="pointer"
+                                p={2}
+                                borderRadius="lg"
+                                bg="gray.800"
+                                borderWidth="1px"
+                                borderColor="gray.700"
+                                _hover={{ 
+                                    bg: 'gray.750',
+                                    borderColor: 'green.500'
+                                }}
+                                transition="all 0.2s"
+                            >
+                                {/* Avatar Circle */}
+                                <Flex
+                                    w="32px"
+                                    h="32px"
+                                    borderRadius="full"
+                                    bg="green.500"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    color="white"
+                                    fontWeight="bold"
+                                    fontSize="sm"
+                                >
+                                    {currentUser.email?.charAt(0).toUpperCase()}
+                                </Flex>
+                                
+                                <Text 
+                                    display={{ base: 'none', lg: 'block' }}
+                                    fontSize="sm"
+                                    color="gray.300"
+                                >
+                                    {currentUser.email?.split('@')[0]}
+                                </Text>
+                            </Flex>
+
+                            {/* Logout Button */}
+                            <Button
+                                colorScheme="red"
+                                size="sm"
+                                onClick={handleLogout}
+                                variant="outline"
+                                color="red.400"
+                                borderColor="red.500"
+                                _hover={{ 
+                                    bg: 'red.900',
+                                    color: 'white',
+                                    borderColor: 'red.400',
+                                    transform: 'translateY(-2px)'
+                                }}
+                                transition="all 0.2s"
+                            >
+                                Salir
                             </Button>
                         </Flex>
                     ) : (
-                        <Flex gap={2}>
-                            <Button 
-                                size="sm" 
+                        <Flex gap={3}>
+                            <Button
+                                size="sm"
                                 onClick={() => navigate('/login')}
-                                colorPalette="green"
-                                bg="brand.primary" color="white" size="lg" borderRadius="full" _hover={{ bg: 'brand.primary/80' }}
-                            > 
-                                Login
+                                colorScheme="green"
+                                variant="outline"
+                                _hover={{ 
+                                    bg: 'green.900',
+                                    transform: 'translateY(-2px)'
+                                }}
+                                transition="all 0.2s"
+                            >
+                                Iniciar Sesión
                             </Button>
-                            <Button 
-                                size="sm" 
-                                variant="outline" 
-                                colorPalette="green"
-                                bg="brand.primary" color="white" size="lg" borderRadius="full" _hover={{ bg: 'brand.primary/80' }}
+                            <Button
+                                size="sm"
+                                onClick={() => navigate('/login')}
+                                colorScheme="green"
+                                display={{ base: 'none', sm: 'flex' }}
+                                _hover={{ 
+                                    transform: 'translateY(-2px)',
+                                    shadow: 'lg'
+                                }}
+                                transition="all 0.2s"
                             >
                                 Registrarse
                             </Button>
