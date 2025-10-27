@@ -5,20 +5,19 @@ import LoginPage from './pages/LoginPage';
 import CompetitionDetailPage from "./pages/CompetitionDetailPage";
 import CreateCompetitionPage from './pages/CreateCompetitionPage'; // Import CreateCompetitionPage
 import CreateBoxPage from './pages/CreateBoxPage'; // <-- Import the new page
-import { ChakraProvider, Box, type ChakraProviderProps } from "@chakra-ui/react"; // Import ChakraProviderProps if needed for explicit typing
+// Removed ChakraProviderProps import, not needed if not passing theme prop
+import { ChakraProvider, Box } from "@chakra-ui/react";
 import Navbar from './components/NavBar'; // Tu Navbar
 import { Toaster } from 'react-hot-toast';
-import customTheme from './theme'; // Import your custom theme
+// customTheme import is no longer directly used here, but keep it if other parts of the app import it
+// import customTheme from './theme';
 
 function App() {
-  // Cast the customTheme to 'any' temporarily if ChakraProviderProps doesn't match
-  // Or ensure customTheme structure matches expected Theme type
-  const providerProps: ChakraProviderProps = { theme: customTheme as any };
+  // Removed providerProps constant
 
   return (
-    // Provide your custom theme to ChakraProvider
-    // Using spread props or ensuring the type matches
-    <ChakraProvider {...providerProps}>
+    // Removed the incorrect theme prop / spread props
+    <ChakraProvider>
 
       <Navbar />
 
@@ -28,7 +27,7 @@ function App() {
         minH="calc(100vh - 80px)"
         pt="80px"
         w="100%"
-        color="white"
+        color="white" // Global styles should handle background now
       >
         {/* 3. Contenedor CENTRADO para tu contenido */}
         <Box
@@ -60,9 +59,7 @@ function App() {
           // Options for specific types
           success: {
             duration: 3000,
-            // Removed incorrect 'theme' property
-            // Styling is handled by the main 'style' or potentially iconTheme/className
-            iconTheme: { // Example styling for icon
+            iconTheme: {
               primary: '#00D1A1', // Your wodAccent.500 color
               secondary: '#0F1116', // Your gray.900 color
             },
@@ -77,3 +74,4 @@ function App() {
 }
 
 export default App;
+

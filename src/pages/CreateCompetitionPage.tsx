@@ -255,19 +255,22 @@ function CreateCompetitionPage() {
                                 <Field.Root w="100%">
                                     <Field.Label color="gray.300">Selecciona tu Box <Text as="span" color="red.500">*</Text></Field.Label>
                                     <NativeSelectRoot>
+                                        {/* Corrected based strictly on TS error: Use _disabled for state */}
                                         <NativeSelectField
                                             value={selectedBoxId}
                                             onChange={(e) => setSelectedBoxId(e.target.value)}
                                             bg="gray.900"
                                             borderColor="gray.600"
                                             color="white"
-                                            // _disabled prop is for STYLING the disabled state
-                                            _disabled={{
-                                                opacity: 0.6,
-                                                cursor: 'not-allowed',
-                                                bg: 'gray.700'
-                                            }}
-                                            disabled={loadingBoxes || isLoading} // Use standard 'disabled' prop to control state
+                                            // _disabled prop IS used for state control according to the error
+                                            _disabled={loadingBoxes || isLoading}
+                                            // Add styling within the _disabled prop if needed, or rely on defaults
+                                            // _disabled={{
+                                            //     opacity: 0.6,
+                                            //     cursor: 'not-allowed',
+                                            //     bg: 'gray.700',
+                                            //     ...(loadingBoxes || isLoading ? {} : {}) // Conditionally apply styles if needed
+                                            // }}
                                             placeholder={loadingBoxes ? "Cargando Boxes..." : myBoxes.length === 0 ? "No tienes boxes registrados" : "Selecciona un Box"}
                                             required // Make selection mandatory if 'oficial' is chosen
                                         >
