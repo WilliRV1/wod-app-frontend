@@ -255,22 +255,19 @@ function CreateCompetitionPage() {
                                 <Field.Root w="100%">
                                     <Field.Label color="gray.300">Selecciona tu Box <Text as="span" color="red.500">*</Text></Field.Label>
                                     <NativeSelectRoot>
-                                        {/* Corrected based strictly on TS error: Use _disabled for state */}
+                                        {/* Corrected: Use 'disabled' prop for state control, _disabled for styling */}
                                         <NativeSelectField
                                             value={selectedBoxId}
                                             onChange={(e) => setSelectedBoxId(e.target.value)}
                                             bg="gray.900"
                                             borderColor="gray.600"
                                             color="white"
-                                            // _disabled prop IS used for state control according to the error
-                                            _disabled={loadingBoxes || isLoading}
-                                            // Add styling within the _disabled prop if needed, or rely on defaults
-                                            // _disabled={{
-                                            //     opacity: 0.6,
-                                            //     cursor: 'not-allowed',
-                                            //     bg: 'gray.700',
-                                            //     ...(loadingBoxes || isLoading ? {} : {}) // Conditionally apply styles if needed
-                                            // }}
+                                            disabled={loadingBoxes || isLoading} // Use standard 'disabled' prop to control state
+                                            _disabled={{ // Use _disabled prop for STYLING the disabled state
+                                                opacity: 0.6,
+                                                cursor: 'not-allowed',
+                                                bg: 'gray.700'
+                                            }}
                                             placeholder={loadingBoxes ? "Cargando Boxes..." : myBoxes.length === 0 ? "No tienes boxes registrados" : "Selecciona un Box"}
                                             required // Make selection mandatory if 'oficial' is chosen
                                         >
@@ -465,4 +462,5 @@ function CreateCompetitionPage() {
 }
 
 export default CreateCompetitionPage;
+
 
