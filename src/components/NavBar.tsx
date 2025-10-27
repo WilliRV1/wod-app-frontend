@@ -1,5 +1,5 @@
 // src/components/Navbar.tsx
-import { Box, Flex, Button, Text, Spacer, Link, MenuItem } from '@chakra-ui/react';
+import { Box, Flex, Button, Text, Spacer, Link } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../firebase';

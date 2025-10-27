@@ -5,7 +5,6 @@ import LoginPage from './pages/LoginPage';
 import CompetitionDetailPage from "./pages/CompetitionDetailPage"
 import { ChakraProvider, defaultSystem, Box } from "@chakra-ui/react"; // Importa Box
 import Navbar from './components/NavBar'; // Tu Navbar
-import CompetitionCard from './components/CompetitionCard';
 
 function App() {
   return (

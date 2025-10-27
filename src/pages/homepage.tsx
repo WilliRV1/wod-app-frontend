@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getAllCompetitions } from '../services/competition.service';
 
 // --- (Fix 2) ---

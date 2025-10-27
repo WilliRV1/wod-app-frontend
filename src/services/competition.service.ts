@@ -1,4 +1,4 @@
-import axios, { type AxiosRequestConfig } from 'axios'; // Asegúrate de importar axios
+import axios from 'axios'; // Asegúrate de importar axios
 const API_URL = 'http://localhost:5000/api';
 
 export const getAllCompetitions = async () => {

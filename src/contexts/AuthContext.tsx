@@ -1,5 +1,5 @@
 // src/contexts/AuthContext.tsx
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react'; // Import ReactNode como tipo
 import { onAuthStateChanged } from 'firebase/auth';
 import type { User } from 'firebase/auth'; // Import User como tipo
