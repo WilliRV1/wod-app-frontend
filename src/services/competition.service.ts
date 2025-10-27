@@ -5,7 +5,7 @@ export const getAllCompetitions = async () => {
   try {
     // 1. Llama a axios.get() con la URL del endpoint
     const response = await axios.get(`${API_URL}/api/competencias`);
-    console.log("Intentando llamar a:", URL);
+    console.log("Intentando llamar a:", response);
 
  
     return response.data;
@@ -18,7 +18,7 @@ export const getAllCompetitions = async () => {
 export const getCompetitionById = async ( id: string ) => {
   try{
     const response = await axios.get(`${API_URL}/api/competencias/${id}`)
-    console.log("Intentando llamar a (detalle):", URL);
+    console.log("Intentando llamar a (detalle):", response);
 
     return response.data
 
