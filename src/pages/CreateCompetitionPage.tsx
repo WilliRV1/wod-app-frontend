@@ -204,7 +204,7 @@ function CreateCompetitionPage() {
                                             shadow: 'lg'
                                         }}
                                         transition="all 0.2s"
-                                        isDisabled={isLoading}
+                                        disabled={isLoading}
                                     >
                                          <VStack gap={1}>
                                               <Text fontWeight="bold" fontSize="md">👤 Comunitaria</Text>
@@ -225,7 +225,7 @@ function CreateCompetitionPage() {
                                         borderColor={tipoCompetencia === 'oficial' ? 'green.500' : 'gray.600'}
                                         borderWidth="2px"
                                         onClick={() => !isOficialDisabled && setTipoCompetencia('oficial')}
-                                        isDisabled={isOficialDisabled || isLoading}
+                                        disabled={isOficialDisabled || isLoading}
                                         _hover={!isOficialDisabled ? {
                                             bg: tipoCompetencia === 'oficial' ? 'green.600' : 'gray.750',
                                             borderColor: 'green.500',
@@ -259,7 +259,11 @@ function CreateCompetitionPage() {
                                             color="white"
                                             _hover={{ borderColor: 'green.500' }}
                                             _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 1px var(--chakra-colors-green-500)' }}
-                                            disabled={loadingBoxes || isLoading}
+                                            _disabled={{
+                                                opacity: 0.6,
+                                                cursor: 'not-allowed',
+                                                bg: 'gray.700'
+                                            }}
                                             required
                                         >
                                             {myBoxes.map((box) => (
