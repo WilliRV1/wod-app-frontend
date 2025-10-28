@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'; // Added React import
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-// import { createCompetition } from '../services/competition.service'; // Assuming you have this service
-import { getMyBoxes } from '../services/box.service'; // Assuming you have this service
+import { createCompetition } from '../services/competition.service';
+import { getMyBoxes } from '../services/box.service';
 import {
     Container,
     Heading,
@@ -12,24 +12,12 @@ import {
     Box,
     Text,
     Textarea,
-    Stack, // Keep Stack for layout if needed
+    Stack,
     Flex,
-    // RadioGroup is no longer needed if using Buttons
 } from '@chakra-ui/react';
 import { Field } from "@chakra-ui/react";
 import { NativeSelectRoot, NativeSelectField } from "@chakra-ui/react";
 import toast from 'react-hot-toast';
-
-// --- MOCK FUNCTION ---
-// Remove this or replace with your actual import when ready
-const createCompetition = async (data: any, token: string) => {
-    console.log("Mock createCompetition called with:", data, token);
-    // Simulate API response
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return { competition: { _id: 'mock-id-123', ...data } };
-};
-// --- END MOCK FUNCTION ---
-
 
 interface Box {
     _id: string;
@@ -54,18 +42,16 @@ function CreateCompetitionPage() {
     const [selectedBoxId, setSelectedBoxId] = useState<string>('');
     const [myBoxes, setMyBoxes] = useState<Box[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [loadingBoxes, setLoadingBoxes] = useState(true); // Start loading
+    const [loadingBoxes, setLoadingBoxes] = useState(true);
 
-    // Cargar los boxes del usuario al montar el componente
     useEffect(() => {
         const loadBoxes = async () => {
             if (!currentUser) {
-                 setLoadingBoxes(false); // Stop loading if no user
-                 setTipoCompetencia('comunitaria'); // Default if no user
+                 setLoadingBoxes(false);
+                 setTipoCompetencia('comunitaria');
                  return;
             }
 
-            // setLoadingBoxes(true); // Already set initially
             try {
                 const token = await currentUser.getIdToken();
                 const response = await getMyBoxes(token);
@@ -75,15 +61,13 @@ function CreateCompetitionPage() {
 
                 if (userBoxes.length > 0) {
                     setSelectedBoxId(userBoxes[0]._id);
-                    // Keep 'comunitaria' as default, let user choose 'oficial'
                 } else {
-                    // If no boxes, force comunitaria
                     setTipoCompetencia('comunitaria');
                 }
             } catch (error) {
                 console.error("Error al cargar boxes:", error);
                 toast.error("No se pudieron cargar tus Boxes.");
-                setTipoCompetencia('comunitaria'); // Default to comunitaria on error
+                setTipoCompetencia('comunitaria');
             } finally {
                 setLoadingBoxes(false);
             }
@@ -113,17 +97,15 @@ function CreateCompetitionPage() {
             return;
         }
 
-        // Ensure a box is selected ONLY IF the type is 'oficial' AND there ARE boxes available
         if (tipoCompetencia === 'oficial' && myBoxes.length > 0 && !selectedBoxId) {
              toast.error("Debes seleccionar un box para competencias oficiales");
              return;
         }
-        // Prevent submitting 'oficial' if no boxes exist (though button should be disabled)
+        
         if (tipoCompetencia === 'oficial' && myBoxes.length === 0) {
             toast.error("No tienes Boxes registrados para crear una competencia oficial.");
             return;
         }
-
 
         setIsLoading(true);
 
@@ -135,13 +117,11 @@ function CreateCompetitionPage() {
                 fecha: formData.fecha,
                 lugar: formData.lugar,
                 descripcion: formData.descripcion,
-                // Ensure split only happens if string is not empty
                 categorias: formData.categorias ? formData.categorias.split(',').map(cat => cat.trim()).filter(cat => cat) : [],
                 wods: formData.wods ? formData.wods.split(',').map(wod => wod.trim()).filter(wod => wod) : [],
                 costo: formData.costo,
             };
 
-            // Only add organizerBoxId if type is 'oficial' AND a box was actually selected
             if (tipoCompetencia === 'oficial' && selectedBoxId) {
                 competitionData.organizadorBoxId = selectedBoxId;
             }
@@ -155,7 +135,7 @@ function CreateCompetitionPage() {
                      navigate(`/competitions/${response.competition._id}`);
                  } else {
                      console.error("ID de competencia no encontrado en la respuesta:", response);
-                     navigate('/'); // Fallback navigation
+                     navigate('/');
                  }
             }, 1500);
 
@@ -175,9 +155,10 @@ function CreateCompetitionPage() {
                 bg="gray.800"
                 borderColor="gray.700"
                 borderWidth="1px"
-                borderRadius="lg"
+                borderRadius="xl"
                 p={8}
-                shadow="xl"
+                shadow="2xl"
+                bgGradient="linear(to-br, gray.800, gray.900)"
             >
                 <VStack gap={6} align="stretch">
                     <Box textAlign="center">
@@ -199,52 +180,67 @@ function CreateCompetitionPage() {
 
                             {/* --- Buttons for Competition Type --- */}
                             <Field.Root w="100%">
-                                <Field.Label color="gray.300">Tipo de Competencia</Field.Label>
-                                <Stack direction="row" gap={4} w="100%" mt={2}>
+                                <Field.Label color="gray.300" fontSize="md" fontWeight="semibold" mb={3}>
+                                    Tipo de Competencia
+                                </Field.Label>
+                                <Stack direction="row" gap={4} w="100%">
                                     <Button
                                         flex="1"
                                         variant={tipoCompetencia === 'comunitaria' ? 'solid' : 'outline'}
                                         colorScheme="green"
+                                        size="lg"
+                                        h="auto"
+                                        py={4}
                                         bg={tipoCompetencia === 'comunitaria' ? 'green.500' : 'transparent'}
-                                        color={tipoCompetencia === 'comunitaria' ? 'white' : 'green.300'}
-                                        borderColor="green.500"
+                                        color={tipoCompetencia === 'comunitaria' ? 'white' : 'gray.300'}
+                                        borderColor={tipoCompetencia === 'comunitaria' ? 'green.500' : 'gray.600'}
+                                        borderWidth="2px"
                                         onClick={() => setTipoCompetencia('comunitaria')}
                                         _hover={{
-                                            bg: tipoCompetencia === 'comunitaria' ? 'green.600' : 'green.500',
-                                            color: 'white'
+                                            bg: tipoCompetencia === 'comunitaria' ? 'green.600' : 'gray.750',
+                                            borderColor: 'green.500',
+                                            color: 'white',
+                                            transform: 'translateY(-2px)',
+                                            shadow: 'lg'
                                         }}
-                                        disabled={isLoading} // Corrected prop name
+                                        transition="all 0.2s"
+                                        isDisabled={isLoading}
                                     >
-                                         <Box textAlign="center">
-                                              <Text fontWeight="semibold">Comunitaria</Text>
-                                              <Text fontSize="xs" fontWeight="normal" color={tipoCompetencia === 'comunitaria' ? 'gray.200': 'gray.400'}>Evento personal</Text>
-                                         </Box>
+                                         <VStack gap={1}>
+                                              <Text fontWeight="bold" fontSize="md">👤 Comunitaria</Text>
+                                              <Text fontSize="xs" fontWeight="normal" opacity={0.8}>
+                                                  Evento personal
+                                              </Text>
+                                         </VStack>
                                     </Button>
                                     <Button
                                         flex="1"
                                         variant={tipoCompetencia === 'oficial' ? 'solid' : 'outline'}
                                         colorScheme="green"
+                                        size="lg"
+                                        h="auto"
+                                        py={4}
                                         bg={tipoCompetencia === 'oficial' ? 'green.500' : 'transparent'}
-                                        color={tipoCompetencia === 'oficial' ? 'white' : 'green.300'}
-                                        borderColor="green.500"
+                                        color={tipoCompetencia === 'oficial' ? 'white' : 'gray.300'}
+                                        borderColor={tipoCompetencia === 'oficial' ? 'green.500' : 'gray.600'}
+                                        borderWidth="2px"
                                         onClick={() => !isOficialDisabled && setTipoCompetencia('oficial')}
-                                        disabled={isOficialDisabled || isLoading} // Corrected prop name
-                                        _hover={!isOficialDisabled ? { // Only apply hover if not disabled
-                                            bg: tipoCompetencia === 'oficial' ? 'green.600' : 'green.500',
-                                            color: 'white'
+                                        isDisabled={isOficialDisabled || isLoading}
+                                        _hover={!isOficialDisabled ? {
+                                            bg: tipoCompetencia === 'oficial' ? 'green.600' : 'gray.750',
+                                            borderColor: 'green.500',
+                                            color: 'white',
+                                            transform: 'translateY(-2px)',
+                                            shadow: 'lg'
                                         }: {}}
-                                        _disabled={{ // Styles for disabled state
-                                            bg: 'gray.700',
-                                            borderColor: 'gray.600',
-                                            color: 'gray.500',
-                                            opacity: 0.6,
-                                            cursor: 'not-allowed',
-                                        }}
+                                        transition="all 0.2s"
                                     >
-                                         <Box textAlign="center">
-                                              <Text fontWeight="semibold">Oficial</Text>
-                                              <Text fontSize="xs" fontWeight="normal" color={tipoCompetencia === 'oficial' ? 'gray.200': 'gray.400'}>En nombre de tu Box</Text>
-                                         </Box>
+                                         <VStack gap={1}>
+                                              <Text fontWeight="bold" fontSize="md">🏢 Oficial</Text>
+                                              <Text fontSize="xs" fontWeight="normal" opacity={0.8}>
+                                                  En nombre de tu Box
+                                              </Text>
+                                         </VStack>
                                     </Button>
                                 </Stack>
                             </Field.Root>
@@ -255,23 +251,17 @@ function CreateCompetitionPage() {
                                 <Field.Root w="100%">
                                     <Field.Label color="gray.300">Selecciona tu Box <Text as="span" color="red.500">*</Text></Field.Label>
                                     <NativeSelectRoot>
-                                        {/* Corrected: Use 'disabled' prop for state control, _disabled for styling */}
                                         <NativeSelectField
                                             value={selectedBoxId}
                                             onChange={(e) => setSelectedBoxId(e.target.value)}
                                             bg="gray.900"
                                             borderColor="gray.600"
                                             color="white"
-                                            disabled={loadingBoxes || isLoading} // Use standard 'disabled' prop to control state
-                                            _disabled={{ // Use _disabled prop for STYLING the disabled state
-                                                opacity: 0.6,
-                                                cursor: 'not-allowed',
-                                                bg: 'gray.700'
-                                            }}
-                                            placeholder={loadingBoxes ? "Cargando Boxes..." : myBoxes.length === 0 ? "No tienes boxes registrados" : "Selecciona un Box"}
-                                            required // Make selection mandatory if 'oficial' is chosen
+                                            _hover={{ borderColor: 'green.500' }}
+                                            _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 1px var(--chakra-colors-green-500)' }}
+                                            disabled={loadingBoxes || isLoading}
+                                            required
                                         >
-                                            {/* Only map if there are boxes */}
                                             {myBoxes.map((box) => (
                                                 <option key={box._id} value={box._id}>
                                                     {box.nombre}
@@ -286,17 +276,37 @@ function CreateCompetitionPage() {
                             {myBoxes.length === 0 && !loadingBoxes && (
                                 <Box
                                     w="100%"
-                                    p={4}
+                                    p={5}
                                     bg="blue.900"
-                                    borderRadius="md"
+                                    borderRadius="lg"
                                     borderColor="blue.500"
-                                    borderWidth="1px"
+                                    borderWidth="2px"
+                                    bgGradient="linear(to-br, blue.900, blue.950)"
                                 >
-                                    <Text color="blue.200" fontSize="sm" mb={2}>
-                                        💡 Para crear una competencia 'Oficial', primero debes registrar tu Box. Por ahora, solo puedes crear competencias 'Comunitarias'.
-                                    </Text>
-                                    {/* Link to create box if needed */}
-                                    {/* <Button size="sm" colorScheme="blue" onClick={() => navigate('/create-box')}>Crear mi Box</Button> */}
+                                    <VStack align="start" gap={3}>
+                                        <Flex align="center" gap={2}>
+                                            <Text fontSize="2xl">💡</Text>
+                                            <Text color="blue.200" fontSize="md" fontWeight="semibold">
+                                                Información sobre Competencias Oficiales
+                                            </Text>
+                                        </Flex>
+                                        <Text color="blue.100" fontSize="sm" lineHeight="1.6">
+                                            Para crear una competencia 'Oficial', primero debes registrar tu Box. 
+                                            Por ahora, solo puedes crear competencias 'Comunitarias' que serán visibles para todos los atletas.
+                                        </Text>
+                                        <Button 
+                                            size="sm" 
+                                            colorScheme="blue" 
+                                            onClick={() => navigate('/create-box')}
+                                            _hover={{
+                                                transform: 'translateY(-2px)',
+                                                shadow: 'md'
+                                            }}
+                                            transition="all 0.2s"
+                                        >
+                                            🏢 Crear mi Box
+                                        </Button>
+                                    </VStack>
                                 </Box>
                             )}
 
@@ -314,7 +324,7 @@ function CreateCompetitionPage() {
                                     _hover={{ borderColor: 'green.500' }}
                                     _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 1px var(--chakra-colors-green-500)' }}
                                     color="white"
-                                    required // HTML5 validation attribute
+                                    required
                                 />
                             </Field.Root>
 
@@ -331,12 +341,11 @@ function CreateCompetitionPage() {
                                         _hover={{ borderColor: 'green.500' }}
                                         _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 1px var(--chakra-colors-green-500)' }}
                                         color="white"
-                                        required // HTML5 validation attribute
-                                        // Style to make date picker icon visible in dark mode
-                                        colorScheme='green' // Attempts to color the picker, may vary by browser
-                                        css={{ // More direct CSS approach
+                                        required
+                                        colorScheme='green'
+                                        css={{
                                             '&::-webkit-calendar-picker-indicator': {
-                                              filter: 'invert(1)', // Makes the default icon whiteish
+                                              filter: 'invert(1)',
                                               cursor: 'pointer'
                                             },
                                           }}
@@ -355,7 +364,7 @@ function CreateCompetitionPage() {
                                         _hover={{ borderColor: 'green.500' }}
                                         _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 1px var(--chakra-colors-green-500)' }}
                                         color="white"
-                                        required // HTML5 validation attribute
+                                        required
                                     />
                                 </Field.Root>
                             </Stack>
@@ -434,8 +443,15 @@ function CreateCompetitionPage() {
                                     variant="outline"
                                     colorScheme="gray"
                                     flex="1"
-                                    onClick={() => navigate('/')} // Navigate to home or maybe back? navigate(-1)
-                                    disabled={isLoading} // Corrected prop name
+                                    onClick={() => navigate('/')}
+                                    disabled={isLoading}
+                                    borderWidth="2px"
+                                    _hover={{
+                                        bg: 'gray.800',
+                                        transform: 'translateY(-2px)',
+                                        shadow: 'md'
+                                    }}
+                                    transition="all 0.2s"
                                 >
                                     Cancelar
                                 </Button>
@@ -443,7 +459,7 @@ function CreateCompetitionPage() {
                                     type="submit"
                                     colorScheme="green"
                                     flex="1"
-                                    loading={isLoading} // Corrected prop name
+                                    loading={isLoading}
                                     _hover={{
                                         transform: 'translateY(-2px)',
                                         shadow: 'lg'
@@ -462,5 +478,3 @@ function CreateCompetitionPage() {
 }
 
 export default CreateCompetitionPage;
-
-
