@@ -3,68 +3,69 @@ import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/homepage';
 import LoginPage from './pages/LoginPage';
 import CompetitionDetailPage from "./pages/CompetitionDetailPage";
-import CreateCompetitionPage from './pages/CreateCompetitionPage'; 
-import CreateBoxPage from './pages/CreateBoxPage'; 
-import { ChakraProvider, Box } from "@chakra-ui/react";
-import Navbar from './components/NavBar'; 
+import CreateCompetitionPage from './pages/CreateCompetitionPage';
+import CreateBoxPage from './pages/CreateBoxPage';
+import { ChakraProvider, defaultSystem, Box } from "@chakra-ui/react";
+import Navbar from './components/NavBar';
 import { Toaster } from 'react-hot-toast';
-import { defaultSystem } from "@chakra-ui/react"
-
 
 function App() {
-  // Removed providerProps constant
-
   return (
-    // Removed the incorrect theme prop / spread props
     <ChakraProvider value={defaultSystem}>
-
-      <Navbar />
-
-      {/* 2. Contenedor principal de la página */}
+      {/* Contenedor principal con fondo oscuro */}
       <Box
-        as="main"
-        minH="calc(100vh - 80px)"
-        pt="80px"
+        minH="100vh"
         w="100%"
-        color="white" // Global styles should handle background now
+        bg="gray.900"
+        color="white"
       >
-        {/* 3. Contenedor CENTRADO para tu contenido */}
+        {/* Navbar */}
+        <Navbar />
+
+        {/* Contenedor principal de la página */}
         <Box
-          maxW="container.lg"
-          mx="auto"
-          px={5}
-          pb={10}
+          as="main"
+          minH="100vh"
+          pt="80px"
+          w="100%"
+          bg="gray.900"
         >
-          {/* Aquí viven tus páginas */}
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/competitions/:id" element={<CompetitionDetailPage />}/>
-            <Route path="/create-competition" element={<CreateCompetitionPage />} />
-            <Route path="/create-box" element={<CreateBoxPage />} />
-            {/* Add other routes here */}
-          </Routes>
+          {/* Contenedor CENTRADO para tu contenido */}
+          <Box
+            maxW="container.lg"
+            mx="auto"
+            px={5}
+            pb={10}
+          >
+            {/* Aquí viven tus páginas */}
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/competitions/:id" element={<CompetitionDetailPage />}/>
+              <Route path="/create-competition" element={<CreateCompetitionPage />} />
+              <Route path="/create-box" element={<CreateBoxPage />} />
+            </Routes>
+          </Box>
         </Box>
       </Box>
+
       <Toaster
         position="bottom-right"
         toastOptions={{
-          // Default options
           duration: 5000,
           style: {
             background: '#363636',
             color: '#fff',
           },
-          // Options for specific types
           success: {
             duration: 3000,
-            iconTheme: {
-              primary: '#00D1A1', // Your wodAccent.500 color
-              secondary: '#0F1116', // Your gray.900 color
+            theme: {
+              primary: 'green',
+              secondary: 'black',
             },
           },
-           error: {
-            duration: 7000, // Longer duration for errors
+          error: {
+            duration: 7000,
           },
         }}
       />
@@ -73,4 +74,3 @@ function App() {
 }
 
 export default App;
-

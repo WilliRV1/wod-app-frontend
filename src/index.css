@@ -1,14 +1,27 @@
-/* Estilos globales */
+/* Estilos globales - Forzar fondo oscuro en TODA la aplicación */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 html {
   background-color: #1a202c !important;
+  min-height: 100vh;
 }
 
 body {
   margin: 0;
   padding: 0;
   background-color: #1a202c !important;
-  color: #ffffff;
+  color: #ffffff !important;
   min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
@@ -16,12 +29,21 @@ body {
   background-color: #1a202c !important;
 }
 
-* {
-  box-sizing: border-box;
-}
-
 /* Asegurar que todos los contenedores de Chakra respeten el fondo */
 .chakra-portal,
-.chakra-provider {
+.chakra-provider,
+[data-theme] {
   background-color: transparent !important;
+}
+
+/* Forzar fondo oscuro en el body del documento */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #1a202c;
+  z-index: -1;
 }
