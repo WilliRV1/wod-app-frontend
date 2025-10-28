@@ -248,7 +248,7 @@ function CreateCompetitionPage() {
 
 
                             {tipoCompetencia === 'oficial' && myBoxes.length > 0 && (
-                                <Field.Root w="100%">
+                                <Field.Root w="100%" required>
                                     <Field.Label color="gray.300">Selecciona tu Box <Text as="span" color="red.500">*</Text></Field.Label>
                                     <NativeSelectRoot>
                                         <NativeSelectField
@@ -264,7 +264,6 @@ function CreateCompetitionPage() {
                                                 cursor: 'not-allowed',
                                                 bg: 'gray.700'
                                             }}
-                                            required
                                         >
                                             {myBoxes.map((box) => (
                                                 <option key={box._id} value={box._id}>
@@ -314,7 +313,7 @@ function CreateCompetitionPage() {
                                 </Box>
                             )}
 
-                            <Field.Root w="100%">
+                            <Field.Root w="100%" required>
                                 <Field.Label color="gray.300">
                                     Nombre de la Competencia <Text as="span" color="red.500">*</Text>
                                 </Field.Label>
@@ -328,12 +327,11 @@ function CreateCompetitionPage() {
                                     _hover={{ borderColor: 'green.500' }}
                                     _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 1px var(--chakra-colors-green-500)' }}
                                     color="white"
-                                    required
                                 />
                             </Field.Root>
 
                             <Stack direction={{ base: 'column', md: 'row' }} w="100%" gap={4}>
-                                <Field.Root w="100%" flex="1">
+                                <Field.Root w="100%" flex="1" required>
                                     <Field.Label color="gray.300">Fecha <Text as="span" color="red.500">*</Text></Field.Label>
                                     <Input
                                         name="fecha"
@@ -345,7 +343,6 @@ function CreateCompetitionPage() {
                                         _hover={{ borderColor: 'green.500' }}
                                         _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 1px var(--chakra-colors-green-500)' }}
                                         color="white"
-                                        required
                                         colorScheme='green'
                                         css={{
                                             '&::-webkit-calendar-picker-indicator': {
@@ -356,7 +353,7 @@ function CreateCompetitionPage() {
                                     />
                                 </Field.Root>
 
-                                <Field.Root w="100%" flex="1">
+                                <Field.Root w="100%" flex="1" required>
                                     <Field.Label color="gray.300">Lugar <Text as="span" color="red.500">*</Text></Field.Label>
                                     <Input
                                         name="lugar"
@@ -368,7 +365,6 @@ function CreateCompetitionPage() {
                                         _hover={{ borderColor: 'green.500' }}
                                         _focus={{ borderColor: 'green.500', boxShadow: '0 0 0 1px var(--chakra-colors-green-500)' }}
                                         color="white"
-                                        required
                                     />
                                 </Field.Root>
                             </Stack>
