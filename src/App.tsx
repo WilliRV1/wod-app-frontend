@@ -59,13 +59,17 @@ function App() {
           },
           success: {
             duration: 3000,
-            theme: {
-              primary: 'green',
-              secondary: 'black',
+            style: {
+              background: '#065f46',
+              color: '#fff',
             },
           },
           error: {
             duration: 7000,
+            style: {
+              background: '#991b1b',
+              color: '#fff',
+            },
           },
         }}
       />
