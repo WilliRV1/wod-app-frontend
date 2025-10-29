@@ -1,14 +1,13 @@
-// pages/ProfilePage.tsx (CORREGIDO)
-
+// src/pages/ProfilePage.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext"; // Importa tu AuthContext
+import { useAuth } from "../contexts/AuthContext";
 import {
   getUserProfile,
   registerUserProfile,
-} from "../services/user.service"; // 👈 IMPORTANTE: Tu servicio de API
+} from "../services/user.service";
 
-// --- IMPORTACIONES CORRECTAS DE CHAKRA V3 ---
+// Imports correctos de Chakra UI v3
 import {
   Box,
   Flex,
@@ -18,12 +17,9 @@ import {
   VStack,
   HStack,
   Center,
-  Spinner,
   IconButton,
-  Link,
-  Divider, // 👈 Usa Divider
-} from "styled-system/jsx"; // 👈 IMPORTANTE: Esta es la ruta
-import { Avatar } from "@chakra-ui/avatar"; // 👈 Avatar viene de su propio paquete
+  Spinner,
+} from "@chakra-ui/react";
 import { toast } from "react-hot-toast";
 import {
   FaInstagram,
@@ -32,7 +28,6 @@ import {
   FaTimesCircle,
 } from "react-icons/fa";
 
-// --- INTERFACE (Ajustada a tu Modelo Mongoose) ---
 interface UserData {
   _id?: string;
   firebaseUid: string;
@@ -41,79 +36,59 @@ interface UserData {
   email: string;
   nivel: "Novato" | "Intermedio" | "RX";
   boxAfiliado: string;
-  competencias: string[]; // 👈 Tu modelo Mongoose usa 'competencias'
+  competencias: string[];
   pais: string;
   ciudad: string;
   mejorPodio: number;
   fotoUrl?: string;
 }
 
-// ===========================================
-// --- COMPONENTE PRINCIPAL: ProfilePage ---
-// ===========================================
 const ProfilePage = () => {
-  // --- HOOKS Y ESTADO ---
   const navigate = useNavigate();
-  const { currentUser, loadingAuth } = useAuth(); // Obtenemos el usuario de Firebase Auth
+  const { currentUser, loadingAuth } = useAuth();
 
   const [userProfile, setUserProfile] = useState<UserData | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
 
-  // Colores (esto parece venir de un custom hook, asumiendo que está bien)
-  // const cardBg = useColorModeValue("white", "gray.800");
-  // const textColor = useColorModeValue("gray.700", "gray.200");
-  // const containerBg = useColorModeValue("gray.50", "gray.900");
-  
-  // Valores fijos para modo oscuro (simplificado)
+  // Colores para modo oscuro
   const cardBg = "gray.800";
   const textColor = "gray.200";
   const containerBg = "gray.900";
 
-
-  // 5. CARGA DEL PERFIL DESDE TU API (MongoDB)
   useEffect(() => {
-    // No hacer nada si el usuario de Firebase aún está cargando
     if (loadingAuth) {
       return;
     }
 
-    // Si terminó de cargar y no hay usuario, redirigir
     if (!currentUser) {
       navigate("/login");
       return;
     }
 
-    // --- Función para cargar el perfil desde NUESTRO backend ---
     const fetchProfile = async () => {
       try {
         setLoadingProfile(true);
-        // 1. Obtener el token de Firebase del usuario actual
         const token = await currentUser.getIdToken();
-
-        // 2. Llamar a nuestro servicio (user.service.ts)
         const data = await getUserProfile(token);
-        setUserProfile(data.user); // El endpoint devuelve { user: ... }
+        setUserProfile(data.user);
         
       } catch (error: any) {
-        
-        // 3. Si el error es 404 (Perfil no encontrado en MongoDB)
         if (error.response && error.response.status === 404) {
           console.warn("Perfil no encontrado en MongoDB, creando uno nuevo...");
           
           try {
-            // Creamos el perfil usando el servicio de registro
             const newProfileData = {
               firebaseUid: currentUser.uid,
               email: currentUser.email || "no-email@error.com",
               nombre: "Usuario",
               apellidos: "Nuevo",
-              rol: "atleta" as "atleta" | "dueño_box", // Tu servicio pide 'rol'
+              rol: "atleta" as "atleta" | "dueño_box",
               nivel: "Novato",
               boxAfiliado: "",
             };
             
             const newData = await registerUserProfile(newProfileData);
-            setUserProfile(newData.user); // Asumimos que también devuelve { user: ... }
+            setUserProfile(newData.user);
             toast.success("¡Perfil creado!");
 
           } catch (createError) {
@@ -122,7 +97,6 @@ const ProfilePage = () => {
             setUserProfile(null);
           }
         } else {
-          // Otro tipo de error de red
           console.error("Error al cargar perfil desde API:", error);
           toast.error("Error de conexión al cargar perfil.");
           setUserProfile(null);
@@ -134,13 +108,12 @@ const ProfilePage = () => {
 
     fetchProfile();
     
-  }, [currentUser, loadingAuth, navigate]); // Dependencias
+  }, [currentUser, loadingAuth, navigate]);
 
-  // 6. ESTADOS DE CARGA Y ERROR
   if (loadingAuth || loadingProfile) {
     return (
       <Center h="100vh" bg={containerBg}>
-        <VStack>
+        <VStack gap={4}>
           <Spinner size="xl" color="green.500" />
           <Text color="gray.400">Cargando perfil...</Text>
         </VStack>
@@ -149,15 +122,16 @@ const ProfilePage = () => {
   }
 
   if (!userProfile || !currentUser) {
-    // Esto ahora significa que el perfil no se pudo cargar NI crear
     return (
       <Center h="100vh" bg={containerBg}>
-        <VStack>
-          <FaTimesCircle size={40} color="red" />
-          <Text color={textColor} fontSize="xl" mt={4}>
+        <VStack gap={4}>
+          <Box color="red.500">
+            <FaTimesCircle size={40} />
+          </Box>
+          <Text color={textColor} fontSize="xl">
             Error crítico al cargar el perfil.
           </Text>
-          <Button colorScheme="green" onClick={() => navigate("/")} mt={4}>
+          <Button colorScheme="green" onClick={() => navigate("/")}>
             Ir a Inicio
           </Button>
         </VStack>
@@ -165,7 +139,6 @@ const ProfilePage = () => {
     );
   }
 
-  // Helper de banderas (tu código)
   const getFlag = (country: string = "") => {
     switch (country.toLowerCase()) {
       case "colombia": return "🇨🇴";
@@ -175,19 +148,16 @@ const ProfilePage = () => {
     }
   };
 
-  // --- COMPONENTE PRINCIPAL ---
   return (
     <Box
       minH="100vh"
       bg={containerBg}
-      pt="100px" // Espacio para la Navbar fija
+      pt="100px"
       pb={10}
       px={{ base: 4, md: 8 }}
     >
-      <VStack maxW="container.md" mx="auto" gap={6}> {/* Añadido gap */}
-        {/* ======================================= */}
-        {/* 1. CARD PRINCIPAL DEL PERFIL */}
-        {/* ======================================= */}
+      <VStack maxW="container.md" mx="auto" gap={6}>
+        {/* CARD PRINCIPAL DEL PERFIL */}
         <Box
           w="100%"
           bg={cardBg}
@@ -202,51 +172,64 @@ const ProfilePage = () => {
             align="center"
             gap={6}
           >
-            {/* Izquierda: Foto y Redes */}
-            <VStack>
-              <Avatar.Root
-                size="xl"
+            {/* Avatar y Redes */}
+            <VStack gap={3}>
+              {/* Avatar simple usando Flex */}
+              <Flex
+                w="120px"
+                h="120px"
+                borderRadius="full"
                 bg="green.500"
+                alignItems="center"
+                justifyContent="center"
                 color="white"
+                fontWeight="bold"
+                fontSize="3xl"
                 border="4px solid"
                 borderColor="green.500"
                 boxShadow="xl"
               >
-                <Avatar.Fallback>
-                  {userProfile.nombre[0]}
-                  {userProfile.apellidos[0]}
-                </Avatar.Fallback>
-                {userProfile.fotoUrl && (
-                  <Avatar.Image src={userProfile.fotoUrl} />
-                )}
-              </Avatar.Root>
+                {userProfile.nombre[0]}{userProfile.apellidos[0]}
+              </Flex>
 
-              <HStack>
-                <Link href="https://www.instagram.com" isExternal>
+              <HStack gap={2}>
+                <a 
+                  href="https://www.instagram.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: 'none' }}
+                >
                   <IconButton
                     aria-label="Instagram"
                     variant="ghost"
-                    colorScheme="green" // Corregido: colorScheme
+                    colorScheme="green"
                     rounded="full"
-                    icon={<FaInstagram />}
-                  />
-                </Link>
-                <Link href="#" isExternal>
+                  >
+                    <FaInstagram />
+                  </IconButton>
+                </a>
+                <a 
+                  href="#" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: 'none' }}
+                >
                   <IconButton
                     aria-label="Compartir"
                     variant="ghost"
-                    colorScheme="green" // Corregido: colorScheme
+                    colorScheme="green"
                     rounded="full"
-                    icon={<FaShareAlt />}
-                  />
-                </Link>
+                  >
+                    <FaShareAlt />
+                  </IconButton>
+                </a>
               </HStack>
               <Text fontSize="xs" color="gray.500">
                 ID: {currentUser.uid.substring(0, 8)}...
               </Text>
             </VStack>
 
-            {/* Centro: Información Personal y Estadísticas */}
+            {/* Información Personal */}
             <Flex direction="column" flex={1} minW="0" align={{ base: "center", md: "start" }}>
               <Heading
                 fontSize={{ base: "xl", md: "2xl" }}
@@ -270,8 +253,8 @@ const ProfilePage = () => {
                 Box Afiliado: {userProfile.boxAfiliado || "Sin afiliar"}
               </Text>
 
-              <HStack mb={4} gap={{ base: 4, md: 6 }}> {/* Añadido gap */}
-                <VStack>
+              <HStack mb={4} gap={{ base: 4, md: 6 }}>
+                <VStack gap={1}>
                   <Text fontSize="2xl" fontWeight="bold" color="green.400">
                     {userProfile.competencias?.length || 0}
                   </Text>
@@ -280,11 +263,10 @@ const ProfilePage = () => {
                   </Text>
                 </VStack>
 
-                <Center height="40px">
-                  <Divider orientation="vertical" borderColor="gray.600" />
-                </Center>
+                {/* Divisor vertical usando Box */}
+                <Box h="40px" w="1px" bg="gray.600" />
 
-                <VStack>
+                <VStack gap={1}>
                   <Text fontSize="2xl" fontWeight="bold" color="green.400">
                     {userProfile.mejorPodio === 999 || !userProfile.mejorPodio
                       ? "N/A"
@@ -295,11 +277,10 @@ const ProfilePage = () => {
                   </Text>
                 </VStack>
 
-                <Center height="40px">
-                  <Divider orientation="vertical" borderColor="gray.600" />
-                </Center>
+                {/* Divisor vertical usando Box */}
+                <Box h="40px" w="1px" bg="gray.600" />
 
-                <VStack>
+                <VStack gap={1}>
                   <Text fontSize="2xl" fontWeight="bold" color="green.400">
                     {userProfile.nivel}
                   </Text>
@@ -317,18 +298,18 @@ const ProfilePage = () => {
                 onClick={() => navigate("/edit-profile")}
                 _hover={{ bg: "green.900", transform: "translateY(-1px)" }}
                 transition="all 0.2s"
-                leftIcon={<FaEdit />} // Icono dentro del botón
-                w={{ base: "100%", md: "auto" }} // Ancho completo en móvil
+                w={{ base: "100%", md: "auto" }}
               >
-                Editar Perfil
+                <HStack gap={2}>
+                  <FaEdit />
+                  <Text>Editar Perfil</Text>
+                </HStack>
               </Button>
             </Flex>
           </Flex>
         </Box>
 
-        {/* ======================================= */}
-        {/* 2. HISTORIAL DE COMPETENCIAS */}
-        {/* ======================================= */}
+        {/* HISTORIAL DE COMPETENCIAS */}
         <Box
           w="100%"
           bg={cardBg}
@@ -342,21 +323,11 @@ const ProfilePage = () => {
             Historial de competencias
           </Heading>
 
-          <VStack align="stretch">
+          <VStack align="stretch" gap={4}>
             {(userProfile.competencias?.length || 0) > 0 ? (
-              // Aquí deberías mapear la lista de IDs para obtener los datos reales
-              <HStack
-                p={4}
-                bg="gray.700"
-                borderRadius="lg"
-                alignItems="center"
-                justifyContent="space-between"
-                cursor="pointer"
-                _hover={{ bg: "gray.600" }}
-                transition="all 0.2s"
-              >
-                {/* ... (Tu JSX de competencia de ejemplo) ... */}
-              </HStack>
+              <Text color="gray.500" textAlign="center" py={4}>
+                Competencias próximamente disponibles
+              </Text>
             ) : (
               <Text color="gray.500" textAlign="center" py={4}>
                 Aún no has participado en ninguna competencia.
@@ -368,7 +339,7 @@ const ProfilePage = () => {
                 variant="solid"
                 colorScheme="green"
                 size="sm"
-                onClick={() => navigate("/")} // Navegar a la home por ahora
+                onClick={() => navigate("/")}
               >
                 Ver todas las competencias
               </Button>
