@@ -8,6 +8,7 @@ import CreateBoxPage from './pages/CreateBoxPage';
 import { ChakraProvider, defaultSystem, Box } from "@chakra-ui/react";
 import Navbar from './components/NavBar';
 import { Toaster } from 'react-hot-toast';
+import ProfilePage from "./pages/ProfilePage"
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
               <Route path="/competitions/:id" element={<CompetitionDetailPage />}/>
               <Route path="/create-competition" element={<CreateCompetitionPage />} />
               <Route path="/create-box" element={<CreateBoxPage />} />
+              <Route path="/profile/:uid" element={<ProfilePage />} />
             </Routes>
           </Box>
         </Box>

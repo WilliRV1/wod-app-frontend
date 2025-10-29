@@ -9,7 +9,7 @@ interface UserProfileData {
     apellidos: string;
     rol: 'atleta' | 'dueño_box';
     nivel?: string;
-    box?: string;
+    boxAfiliado?: string;
 }
 
 export const registerUserProfile = async (userData: UserProfileData) => {

@@ -66,7 +66,8 @@ function LoginPage() {
         nombre,
         apellidos,
         nivel,
-        boxAfiliado: boxAfiliado.trim() || undefined
+        boxAfiliado: boxAfiliado.trim() || undefined,
+        rol: 'atleta'
       });
 
       setMessage("¡Registro completo! Redirigiendo...");
