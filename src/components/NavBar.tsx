@@ -1,21 +1,12 @@
-import {
-  Box,
-  Flex,
-  Button,
-  Text,
-  Spacer,
-  Link,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverArrow,
-  Portal
-} from "@chakra-ui/react";
+import { Box, Flex, Button, Text, Spacer, Link } from "styled-system/jsx"; // Ensure this path is correct relative to tsconfig/vite config
+import { Popover } from "@chakra-ui/popover";
+import { Portal } from "@chakra-ui/portal";
 import { useNavigate } from "react-router-dom";
+// Assuming AuthContext.tsx is in src/contexts/
 import { useAuth } from "../contexts/AuthContext";
+// Assuming firebase.ts is in src/
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
-
 
 function Navbar() {
   const { currentUser, loadingAuth } = useAuth();
@@ -31,18 +22,15 @@ function Navbar() {
     }
   };
 
-    const handleClickProfile = () => {
-    // Comprueba que currentUser no sea nulo
+  const handleClickProfile = () => {
     if (currentUser) {
-      // Usa currentUser.uid (el ID de Firebase) para navegar
+      // Navigate using the firebase UID
       navigate(`/profile/${currentUser.uid}`);
     } else {
-      // Si algo falla, redirige a login
       console.error("No se pudo encontrar el usuario para ir al perfil.");
       navigate("/login");
     }
   };
-
 
   return (
     <Box
@@ -52,7 +40,7 @@ function Navbar() {
       w="100%"
       position="fixed"
       top="0"
-      zIndex="500"
+      zIndex="sticky" // Use semantic token or number like 500
       borderBottomWidth="1px"
       borderColor="gray.800"
       shadow="lg"
@@ -61,8 +49,8 @@ function Navbar() {
         w="100%"
         maxW="container.md"
         mx="auto"
-        px={5}
-        py={4}
+        px="5" // Use Panda tokens/values
+        py="4" // Use Panda tokens/values
         alignItems="center"
       >
         {/* Logo/Brand */}
@@ -79,7 +67,7 @@ function Navbar() {
           transition="all 0.2s"
           display="flex"
           alignItems="center"
-          gap={2}
+          gap="2" // Use Panda tokens/values
         >
           <Box
             as="span"
@@ -103,101 +91,143 @@ function Navbar() {
               Cargando...
             </Text>
           ) : currentUser ? (
-            <Flex alignItems="center" gap={3}>
+            <Flex alignItems="center" gap="3">
               {/* Crear Competencia Button */}
               <Button
                 size="sm"
-                colorScheme="green"
+                // colorScheme="green" // Use direct styling with Panda
+                bg="green.500"
+                color="white"
+                _hover={{ bg: "green.600" }}
                 display={{ base: "none", md: "flex" }}
                 onClick={() => navigate("/create-competition")}
-                _hover={{
+                _hover={{ // Combined hover styles
                   transform: "translateY(-2px)",
                   shadow: "lg",
+                  bg: "green.600" // Ensure hover bg is defined
                 }}
                 transition="all 0.2s"
               >
                 + Crear
               </Button>
 
-              {/* Avatar/User Popover */}
-              <Popover.Root positioning={{ placement: "bottom-end" }}>
-                    <Popover.Trigger>
-                      {/* En v3, el 'asChild' no es necesario,
-                          simplemente pones el elemento que dispara el Popover */}
-                      <Flex
-                        alignItems="center"
-                        gap={2}
-                        cursor="pointer"
-                        p={2}
-                        borderRadius="lg"
-                        bg="gray.800"
-                        borderWidth="1px"
-                        borderColor="gray.700"
-                        _hover={{
-                          bg: "gray.700",
-                          borderColor: "green.500",
-                        }}
-                        transition="all 0.2s"
-                      >
-                        {/* ... tu Flex de avatar ... */}
-                        <Flex
-                          w="32px"
-                          h="32px"
-                          borderRadius="full"
-                          bg="green.500"
-                          // ...
+              {/* === POPOVER JSX === */}
+              <Popover.Root positioning={{ placement: "bottom-end" }} >
+                <Popover.Trigger>
+                  {/* Trigger Element */}
+                  <Flex
+                    alignItems="center"
+                    gap="2"
+                    cursor="pointer"
+                    p="2"
+                    borderRadius="lg"
+                    bg="gray.800"
+                    borderWidth="1px"
+                    borderColor="gray.700"
+                    _hover={{
+                      bg: "gray.700",
+                      borderColor: "green.500",
+                    }}
+                    transition="all 0.2s"
+                  >
+                    {/* Avatar Flex */}
+                    <Flex
+                      w="32px"
+                      h="32px"
+                      borderRadius="full"
+                      bg="green.500"
+                      alignItems="center"
+                      justifyContent="center"
+                      color="white"
+                      fontWeight="bold"
+                      fontSize="sm"
+                    >
+                      {currentUser.email?.charAt(0).toUpperCase()}
+                    </Flex>
+                    {/* Email Text */}
+                    <Text
+                      display={{ base: "none", lg: "block" }}
+                      fontSize="sm"
+                      color="gray.300"
+                    >
+                      {currentUser.email?.split("@")[0]}
+                    </Text>
+                  </Flex>
+                </Popover.Trigger>
+
+                <Portal>
+                  <Popover.Positioner>
+                    {/* Popover Content Box */}
+                    <Popover.Content
+                      bg="gray.800"
+                      borderColor="gray.700"
+                      w="180px"
+                      _focus={{ boxShadow: "none" }}
+                      borderRadius="md"
+                      boxShadow="lg"
+                      borderWidth="1px"
+                      mt="2" // Use Panda token/value
+                    >
+                      {/* Arrow */}
+                      <Popover.Arrow bg="gray.800">
+                         <Popover.ArrowTip />
+                      </Popover.Arrow>
+                      {/* Body */}
+                      <Popover.Body p="2" display="flex" flexDir="column" gap="2">
+                        {/* Buttons inside Popover */}
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          justifyContent="start"
+                          w="full"
+                          color="white" // Ensure text color in ghost
+                          _hover={{ bg: "gray.700" }}
+                          onClick={handleClickProfile}
                         >
-                          {currentUser.email?.charAt(0).toUpperCase()}
-                        </Flex>
-                        {/* ... tu Text de email ... */}
-                        <Text
-                          display={{ base: "none", lg: "block" }}
-                          // ...
-                        >
-                          {currentUser.email?.split("@")[0]}
-                        </Text>
-                      </Flex>
-                    </Popover.Trigger>
-                    
-                    <Portal>
-                      <Popover.Positioner>
-                        <Popover.Content
-                          bg="gray.800"
-                          borderColor="gray.700"
-                          w="180px"
-                          _focus={{ boxShadow: "none" }}
-                        >
-                          <Popover.Arrow bg="gray.800" />
-                          <Popover.Body display="flex" flexDir="column" gap={2}>
-                            {/* ... tus botones ... */}
-                            <Button
-                              size="sm"
-                              bg="gray.700"
-                              color="white"
-                              _hover={{ bg: "gray.600" }}
-                              onClick={handleClickProfile}
-                            >
-                              Ver Perfil
-                            </Button>
-                            {/* ... etc ... */}
-                          </Popover.Body>
-                        </Popover.Content>
-                      </Popover.Positioner>
-                    </Portal>
-                  </Popover.Root>
+                          Ver Perfil
+                        </Button>
+                         <Button
+                            size="sm"
+                            variant="ghost"
+                            justifyContent="start"
+                            w="full"
+                            color="white"
+                            _hover={{ bg: "gray.700" }}
+                            onClick={() => navigate("/profile")} // Adjust navigation as needed
+                          >
+                            Competencias Creadas
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            justifyContent="start"
+                            w="full"
+                            color="white"
+                            _hover={{ bg: "gray.700" }}
+                             onClick={() => navigate("/settings")} // Adjust navigation as needed
+                          >
+                            Ajustes
+                          </Button>
+                      </Popover.Body>
+                    </Popover.Content>
+                  </Popover.Positioner>
+                </Portal>
+              </Popover.Root>
+              {/* === END POPOVER === */}
+
 
               {/* Logout Button */}
               <Button
-                colorScheme="red"
+                // colorScheme="red" // Use direct styling
                 size="sm"
                 onClick={handleLogout}
                 variant="outline"
                 color="red.400"
                 borderColor="red.500"
                 _hover={{
-                  bg: "red.900",
+                  bg: "red.900", // Use color token
                   color: "white",
-                  borderColor: "red.400",
+                  borderColor: "red.400", // Use color token
                   transform: "translateY(-2px)",
                 }}
                 transition="all 0.2s"
@@ -206,14 +236,17 @@ function Navbar() {
               </Button>
             </Flex>
           ) : (
-            <Flex gap={3}>
+            // Logged Out State
+            <Flex gap="3">
               <Button
                 size="sm"
                 onClick={() => navigate("/login")}
-                colorScheme="green"
+                // colorScheme="green"
                 variant="outline"
+                color="green.400" // Outline color
+                borderColor="green.500" // Outline border
                 _hover={{
-                  bg: "green.900",
+                  bg: "green.900", // Use color token
                   transform: "translateY(-2px)",
                 }}
                 transition="all 0.2s"
@@ -222,12 +255,16 @@ function Navbar() {
               </Button>
               <Button
                 size="sm"
-                onClick={() => navigate("/login")}
-                colorScheme="green"
+                onClick={() => navigate("/login")} // Should this go to /register?
+                // colorScheme="green"
+                bg="green.500"
+                color="white"
+                _hover={{ bg: "green.600" }}
                 display={{ base: "none", sm: "flex" }}
-                _hover={{
+                _hover={{ // Combined hover
                   transform: "translateY(-2px)",
                   shadow: "lg",
+                  bg: "green.600" // Ensure hover bg
                 }}
                 transition="all 0.2s"
               >
@@ -242,3 +279,4 @@ function Navbar() {
 }
 
 export default Navbar;
+
