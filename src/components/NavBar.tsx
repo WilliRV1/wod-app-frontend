@@ -1,14 +1,18 @@
-// src/components/NavBar.tsx
-import { Box, Flex, Button, Text, Spacer, Portal } from "@chakra-ui/react";
+  // src/components/NavBar.tsx
+import { Box, Flex, Button, Text, Spacer, Portal, IconButton, VStack, HStack } from "@chakra-ui/react";
 import { PopoverRoot, PopoverTrigger, PopoverContent, PopoverBody, PopoverArrow } from "@chakra-ui/react";
+import { DrawerRoot, DrawerBackdrop, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseTrigger } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
+import { useDisclosure } from "@chakra-ui/react";
+import { HamburgerIcon } from "@chakra-ui/icons";
 
 function Navbar() {
   const { currentUser, loadingAuth } = useAuth();
   const navigate = useNavigate();
+  const { open: isDrawerOpen, onOpen: onDrawerOpen, onClose: onDrawerClose } = useDisclosure();
 
   const handleLogout = async () => {
     try {
@@ -44,17 +48,17 @@ function Navbar() {
     >
       <Flex
         w="100%"
-        maxW="container.md"
+        maxW="container.xl"  // Match App container
         mx="auto"
-        px={5}
-        py={4}
+        px={{ base: 4, md: 6, lg: 8 }}  // Responsive padding
+        py={{ base: 3, md: 4 }}  // Responsive padding
         alignItems="center"
       >
         {/* Logo/Brand */}
         <a
           href="/"
           style={{
-            fontSize: '1.5rem',
+            fontSize: '1.25rem', // Responsive font size
             fontWeight: 'bold',
             color: 'white',
             textDecoration: 'none',
@@ -96,22 +100,33 @@ function Navbar() {
             </Text>
           ) : currentUser ? (
             <Flex alignItems="center" gap={3}>
-              {/* Crear Competencia Button */}
-              <Button
-                size="sm"
-                bg="green.500"
-                color="white"
-                display={{ base: "none", md: "flex" }}
-                onClick={() => navigate("/create-competition")}
-                _hover={{
-                  transform: "translateY(-2px)",
-                  shadow: "lg",
-                  bg: "green.600"
-                }}
-                transition="all 0.2s"
-              >
-                + Crear
-              </Button>
+              {/* Desktop Menu - Hidden on mobile */}
+              <HStack gap={6} display={{ base: 'none', lg: 'flex' }}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  colorScheme="green"
+                  onClick={() => navigate("/")}
+                >
+                  Inicio
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  colorScheme="green"
+                  onClick={() => navigate("/create-competition")}
+                >
+                  + Crear
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  colorScheme="green"
+                  onClick={() => navigate(`/profile/${currentUser.uid}`)}
+                >
+                  Perfil
+                </Button>
+              </HStack>
 
               {/* Popover Menu - POSICIONAMIENTO PRECISO */}
               <PopoverRoot 
@@ -149,7 +164,7 @@ function Navbar() {
                       </Flex>
                       {/* Email Text */}
                       <Text
-                        display={{ base: "none", lg: "block" }}
+                        display={{ base: "none", md: "block" }}
                         fontSize="sm"
                         color="gray.300"
                       >
@@ -204,6 +219,17 @@ function Navbar() {
                         w="full"
                         color="white"
                         _hover={{ bg: "gray.700" }}
+                        onClick={() => navigate("/notifications")}
+                      >
+                        🔔 Notificaciones
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        justifyContent="start"
+                        w="full"
+                        color="white"
+                        _hover={{ bg: "gray.700" }}
                         onClick={() => navigate("/settings")}
                       >
                         ⚙️ Ajustes
@@ -228,24 +254,15 @@ function Navbar() {
                 </Portal>
               </PopoverRoot>
 
-              {/* Logout Button (solo visible en desktop) */}
-              <Button
-                size="sm"
-                onClick={handleLogout}
-                variant="outline"
-                color="red.400"
-                borderColor="red.500"
-                display={{ base: "none", md: "flex" }}
-                _hover={{
-                  bg: "red.900",
-                  color: "white",
-                  borderColor: "red.400",
-                  transform: "translateY(-2px)",
-                }}
-                transition="all 0.2s"
+              {/* Mobile Menu Button */}
+              <IconButton
+                display={{ base: 'flex', md: 'none' }}
+                onClick={onDrawerOpen}
+                variant="ghost"
+                aria-label="Open menu"
               >
-                Salir
-              </Button>
+                <HamburgerIcon />
+              </IconButton>
             </Flex>
           ) : (
             // Logged Out State
@@ -283,6 +300,53 @@ function Navbar() {
           )}
         </Box>
       </Flex>
+
+      {/* Mobile Drawer */}
+      <DrawerRoot open={isDrawerOpen} onOpenChange={onDrawerClose}>
+        <DrawerBackdrop />
+        <DrawerContent bg="gray.900">
+          <DrawerHeader color="white" borderBottomWidth="1px" borderColor="gray.700">
+            <Flex justify="space-between" align="center">
+              <Text>Menú</Text>
+              <DrawerCloseTrigger />
+            </Flex>
+          </DrawerHeader>
+          <DrawerBody>
+            <VStack gap={4} align="stretch">
+              <Button variant="ghost" colorScheme="green" w="100%" onClick={() => { navigate("/"); onDrawerClose(); }}>
+                🏠 Inicio
+              </Button>
+              <Button variant="ghost" colorScheme="green" w="100%" onClick={() => { navigate("/create-competition"); onDrawerClose(); }}>
+                ➕ Crear Competencia
+              </Button>
+              <Button variant="ghost" colorScheme="green" w="100%" onClick={() => { navigate(`/profile/${currentUser?.uid}`); onDrawerClose(); }}>
+                👤 Perfil
+              </Button>
+              <Button variant="ghost" colorScheme="green" w="100%" onClick={() => { navigate("/my-competitions"); onDrawerClose(); }}>
+                🏆 Mis Competencias
+              </Button>
+              <Button variant="ghost" colorScheme="green" w="100%" onClick={() => { navigate("/notifications"); onDrawerClose(); }}>
+                🔔 Notificaciones
+              </Button>
+              <Button variant="ghost" colorScheme="green" w="100%" onClick={() => { navigate("/settings"); onDrawerClose(); }}>
+                ⚙️ Ajustes
+              </Button>
+
+              <Box h="1px" bg="gray.700" my={2} />
+
+              <Button
+                variant="ghost"
+                color="red.400"
+                w="100%"
+                onClick={() => { handleLogout(); onDrawerClose(); }}
+                _hover={{ bg: "red.900" }}
+              >
+                🚪 Cerrar Sesión
+              </Button>
+            </VStack>
+          </DrawerBody>
+        </DrawerContent>
+      </DrawerRoot>
     </Box>
   );
 }

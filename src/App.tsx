@@ -1,4 +1,5 @@
 import './App.css';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/homepage';
 import LoginPage from './pages/LoginPage';
@@ -9,8 +10,16 @@ import { ChakraProvider, defaultSystem, Box } from "@chakra-ui/react";
 import Navbar from './components/NavBar';
 import { Toaster } from 'react-hot-toast';
 import ProfilePage from "./pages/ProfilePage"
+import EditProfilePage from "./pages/EditProfilePage"
+import NotificationsPage from "./pages/NotificationsPage"
+import { initializeNotifications } from './services/notification.service';
 
 function App() {
+  // Initialize notifications on app start
+  React.useEffect(() => {
+    initializeNotifications();
+  }, []);
+
   return (
     <ChakraProvider value={defaultSystem}>
       {/* Contenedor principal con fondo oscuro */}
@@ -27,15 +36,15 @@ function App() {
         <Box
           as="main"
           minH="100vh"
-          pt="80px"
+          pt={{ base: "60px", md: "80px" }}  // Responsive navbar height
           w="100%"
           bg="gray.900"
         >
           {/* Contenedor CENTRADO para tu contenido */}
           <Box
-            maxW="container.lg"
+            maxW="container.xl"  // Más grande que lg
             mx="auto"
-            px={5}
+            px={{ base: 4, md: 6, lg: 8 }}  // Responsive padding
             pb={10}
           >
             {/* Aquí viven tus páginas */}
@@ -46,6 +55,8 @@ function App() {
               <Route path="/create-competition" element={<CreateCompetitionPage />} />
               <Route path="/create-box" element={<CreateBoxPage />} />
               <Route path="/profile/:uid" element={<ProfilePage />} />
+              <Route path="/edit-profile" element={<EditProfilePage />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
             </Routes>
           </Box>
         </Box>

@@ -36,9 +36,9 @@ interface UserData {
   email: string;
   nivel: "Novato" | "Intermedio" | "RX";
   boxAfiliado: string;
+  nacionalidad?: string;
+  ciudad?: string;
   competencias: string[];
-  pais: string;
-  ciudad: string;
   mejorPodio: number;
   fotoUrl?: string;
 }
@@ -139,13 +139,42 @@ const ProfilePage = () => {
     );
   }
 
-  const getFlag = (country: string = "") => {
-    switch (country.toLowerCase()) {
-      case "colombia": return "🇨🇴";
-      case "chile": return "🇨🇱";
-      case "mexico": return "🇲🇽";
-      default: return "🌎";
-    }
+  const getFlag = (country: string | null | undefined) => {
+    if (!country) return "🌎";
+
+    // Lista completa de países con banderas
+    const PAISES = [
+      { code: "Colombia", name: "Colombia", flag: "🇨🇴" },
+      { code: "México", name: "México", flag: "🇲🇽" },
+      { code: "Argentina", name: "Argentina", flag: "🇦🇷" },
+      { code: "Chile", name: "Chile", flag: "🇨🇱" },
+      { code: "Perú", name: "Perú", flag: "🇵🇪" },
+      { code: "Ecuador", name: "Ecuador", flag: "🇪🇨" },
+      { code: "Uruguay", name: "Uruguay", flag: "🇺🇾" },
+      { code: "Paraguay", name: "Paraguay", flag: "🇵🇾" },
+      { code: "Bolivia", name: "Bolivia", flag: "🇧🇴" },
+      { code: "Venezuela", name: "Venezuela", flag: "🇻🇪" },
+      { code: "Panamá", name: "Panamá", flag: "🇵🇦" },
+      { code: "Costa Rica", name: "Costa Rica", flag: "🇨🇷" },
+      { code: "Guatemala", name: "Guatemala", flag: "🇬🇹" },
+      { code: "El Salvador", name: "El Salvador", flag: "🇸🇻" },
+      { code: "Honduras", name: "Honduras", flag: "🇭🇳" },
+      { code: "Nicaragua", name: "Nicaragua", flag: "🇳🇮" },
+      { code: "República Dominicana", name: "República Dominicana", flag: "🇩🇴" },
+      { code: "Puerto Rico", name: "Puerto Rico", flag: "🇵🇷" },
+      { code: "Cuba", name: "Cuba", flag: "🇨🇺" },
+      { code: "Estados Unidos", name: "Estados Unidos", flag: "🇺🇸" },
+      { code: "Canadá", name: "Canadá", flag: "🇨🇦" },
+      { code: "España", name: "España", flag: "🇪🇸" },
+    ];
+
+    // Buscar el país por nombre exacto
+    const paisEncontrado = PAISES.find(pais =>
+      pais.name.toLowerCase() === country.toLowerCase() ||
+      pais.code.toLowerCase() === country.toLowerCase()
+    );
+
+    return paisEncontrado ? paisEncontrado.flag : "🌎";
   };
 
   return (
@@ -193,32 +222,36 @@ const ProfilePage = () => {
               </Flex>
 
               <HStack gap={2}>
-                <a 
-                  href="https://www.instagram.com" 
-                  target="_blank" 
+                <a
+                  href="https://www.instagram.com"
+                  target="_blank"
                   rel="noopener noreferrer"
                   style={{ textDecoration: 'none' }}
                 >
                   <IconButton
                     aria-label="Instagram"
                     variant="ghost"
-                    colorScheme="green"
+                    color="gray.400"
+                    _hover={{ color: "green.400", bg: "gray.700" }}
                     rounded="full"
+                    size="lg"
                   >
                     <FaInstagram />
                   </IconButton>
                 </a>
-                <a 
-                  href="#" 
-                  target="_blank" 
+                <a
+                  href="#"
+                  target="_blank"
                   rel="noopener noreferrer"
                   style={{ textDecoration: 'none' }}
                 >
                   <IconButton
                     aria-label="Compartir"
                     variant="ghost"
-                    colorScheme="green"
+                    color="gray.400"
+                    _hover={{ color: "green.400", bg: "gray.700" }}
                     rounded="full"
+                    size="lg"
                   >
                     <FaShareAlt />
                   </IconButton>
@@ -241,7 +274,7 @@ const ProfilePage = () => {
               </Heading>
 
               <Text fontSize="md" color="gray.400" mb={2}>
-                {getFlag(userProfile.pais)} {userProfile.ciudad || "Sin ciudad"}
+                {getFlag(userProfile.nacionalidad)} {userProfile.nacionalidad || "Sin país"} • {userProfile.ciudad || "Sin ciudad"}
               </Text>
 
               <Text
@@ -299,10 +332,12 @@ const ProfilePage = () => {
                 _hover={{ bg: "green.900", transform: "translateY(-1px)" }}
                 transition="all 0.2s"
                 w={{ base: "100%", md: "auto" }}
+                color="green.400"
+                borderColor="green.600"
               >
                 <HStack gap={2}>
                   <FaEdit />
-                  <Text>Editar Perfil</Text>
+                  <Text color="green.400">Editar Perfil</Text>
                 </HStack>
               </Button>
             </Flex>

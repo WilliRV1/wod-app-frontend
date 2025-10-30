@@ -25,13 +25,13 @@ const CompetitionCard: React.FC<CompetitionCardProps> = ({ competition }) => {
   };
 
   return (
-    <Box 
-      borderWidth="1px" 
-      borderRadius="lg" 
-      overflow="hidden" 
-      p={5} 
-      mb={4} 
-      bg="gray.800" 
+    <Box
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+      p={{ base: 4, md: 5, lg: 6 }}  // Responsive padding
+      mb={4}
+      bg="gray.800"
       borderColor="gray.700"
       cursor="pointer"
       onClick={handleClick}
@@ -43,28 +43,34 @@ const CompetitionCard: React.FC<CompetitionCardProps> = ({ competition }) => {
         bg: 'gray.750'
       }}
     >
-      <Stack gap={3} textAlign="left"> 
-        <Heading 
-          size="lg"
+      <Stack gap={3} textAlign="left">
+        <Heading
+          size={{ base: "md", md: "lg" }}  // Responsive size
           color="white"
           _hover={{ color: 'green.400' }}
           transition="color 0.2s"
         >
           {competition.nombre}
         </Heading>
-        
-        <Flex alignItems="center" gap={2}>
-          <Icon as={CalendarIcon} color="green.400" boxSize={4} /> 
-          <Text fontSize="md" color="gray.300" fontWeight="medium">
-            {formattedDate}
-          </Text>
-        </Flex>
-        
-        <Flex alignItems="center" gap={2}>
-          <Icon as={LocationIcon} color="green.400" boxSize={4} />
-          <Text fontSize="md" color="gray.300" fontWeight="medium">
-            {competition.lugar}
-          </Text>
+
+        <Flex
+          direction={{ base: "column", sm: "row" }}  // Responsive direction
+          align={{ base: "flex-start", sm: "center" }}
+          gap={2}
+        >
+          <Flex alignItems="center" gap={2}>
+            <Icon as={CalendarIcon} color="green.400" boxSize={4} />
+            <Text fontSize="md" color="gray.300" fontWeight="medium">
+              {formattedDate}
+            </Text>
+          </Flex>
+
+          <Flex alignItems="center" gap={2}>
+            <Icon as={LocationIcon} color="green.400" boxSize={4} />
+            <Text fontSize="md" color="gray.300" fontWeight="medium">
+              {competition.lugar}
+            </Text>
+          </Flex>
         </Flex>
       </Stack>
     </Box>
