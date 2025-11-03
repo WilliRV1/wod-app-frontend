@@ -1,4 +1,4 @@
-  // src/components/NavBar.tsx
+// src/components/NavBar.tsx
 import { Box, Flex, Button, Text, Spacer, Portal, IconButton, VStack, HStack } from "@chakra-ui/react";
 import { PopoverRoot, PopoverTrigger, PopoverContent, PopoverBody, PopoverArrow } from "@chakra-ui/react";
 import { DrawerRoot, DrawerBackdrop, DrawerContent, DrawerHeader, DrawerBody, DrawerCloseTrigger } from "@chakra-ui/react";
@@ -7,7 +7,8 @@ import { useAuth } from "../contexts/AuthContext";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import { useDisclosure } from "@chakra-ui/react";
-import { HamburgerIcon } from "@chakra-ui/icons";
+import { HiMenu } from "react-icons/hi";
+import { FaBolt, FaUser, FaSignOutAlt } from "react-icons/fa";
 
 function Navbar() {
   const { currentUser, loadingAuth } = useAuth();
@@ -48,20 +49,17 @@ function Navbar() {
     >
       <Flex
         w="100%"
-        maxW="container.xl"  // Match App container
+        maxW="container.xl"
         mx="auto"
-        px={{ base: 4, md: 6, lg: 8 }}  // Responsive padding
-        py={{ base: 3, md: 4 }}  // Responsive padding
+        px={{ base: 4, md: 6, lg: 8 }}
+        py={{ base: 3, md: 4 }}
         alignItems="center"
       >
-        {/* Logo/Brand */}
-        <a
-          href="/"
+        {/* Logo/Brand - WODMATCH BATTLE */}
+        <Box
+          cursor="pointer"
+          onClick={() => navigate("/")}
           style={{
-            fontSize: '1.25rem', // Responsive font size
-            fontWeight: 'bold',
-            color: 'white',
-            textDecoration: 'none',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
@@ -83,12 +81,17 @@ function Navbar() {
               fontWeight: '800'
             }}
           >
-            WOD
+            <HStack gap={2}>
+              <FaBolt size={24} color="#48bb78" />
+              <Text fontSize="xl" fontWeight="black" color="white">
+                WODMATCH
+              </Text>
+              <Text fontSize="xl" fontWeight="black" color="green.400">
+                BATTLE
+              </Text>
+            </HStack>
           </Box>
-          <Box as="span" color="white">
-            APP
-          </Box>
-        </a>
+        </Box>
 
         <Spacer />
 
@@ -100,39 +103,42 @@ function Navbar() {
             </Text>
           ) : currentUser ? (
             <Flex alignItems="center" gap={3}>
-              {/* Desktop Menu - Hidden on mobile */}
-              <HStack gap={6} display={{ base: 'none', lg: 'flex' }}>
+              {/* Desktop Menu - Solo WODMATCH BATTLE */}
+              <HStack gap={4} display={{ base: 'none', lg: 'flex' }}>
                 <Button
                   size="sm"
-                  variant="ghost"
+                  variant="outline"
                   colorScheme="green"
+                  borderColor="green.500"
+                  color="green.400"
+                  _hover={{
+                    bg: "green.900",
+                    transform: "translateY(-2px)"
+                  }}
+                  transition="all 0.2s"
                   onClick={() => navigate("/")}
                 >
-                  Inicio
+                  🥊 Inicio Battle
                 </Button>
                 <Button
                   size="sm"
-                  variant="ghost"
                   colorScheme="green"
-                  onClick={() => navigate("/create-competition")}
+                  bg="green.500"
+                  color="white"
+                  _hover={{
+                    transform: "translateY(-2px)",
+                    shadow: "lg",
+                    bg: "green.600"
+                  }}
+                  transition="all 0.2s"
+                  onClick={() => navigate("/battle/register")}
                 >
-                  + Crear
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  colorScheme="green"
-                  onClick={() => navigate(`/profile/${currentUser.uid}`)}
-                >
-                  Perfil
+                  🎯 Registrarse
                 </Button>
               </HStack>
 
-              {/* Popover Menu - POSICIONAMIENTO PRECISO */}
-              <PopoverRoot 
-                lazyMount
-                unmountOnExit
-              > 
+              {/* Popover Menu - SIMPLIFICADO */}
+              <PopoverRoot lazyMount unmountOnExit>
                 <PopoverTrigger asChild>
                   <Button
                     size="sm"
@@ -148,7 +154,6 @@ function Navbar() {
                     transition="all 0.2s"
                   >
                     <Flex alignItems="center" gap={2}>
-                      {/* Simple Avatar Circle */}
                       <Flex
                         w="32px"
                         h="32px"
@@ -162,7 +167,6 @@ function Navbar() {
                       >
                         {currentUser.email?.charAt(0).toUpperCase()}
                       </Flex>
-                      {/* Email Text */}
                       <Text
                         display={{ base: "none", md: "block" }}
                         fontSize="sm"
@@ -178,15 +182,14 @@ function Navbar() {
                   <PopoverContent
                     bg="gray.800"
                     borderColor="gray.700"
-                    w="200px"
+                    w="180px"
                     borderRadius="md"
                     boxShadow="2xl"
                     borderWidth="1px"
                     zIndex={10000}
                     position="fixed"
-                    // POSICIONAMIENTO CALCULADO PARA NAVBAR CENTRADO
                     top="55px"
-                    right="20px" // Ajusta este valor hasta que quede perfecto// Ajusta 1200 según tu maxW
+                    right="20px"
                   >
                     <PopoverArrow bg="gray.800" />
                     <PopoverBody p={3} display="flex" flexDir="column" gap={2}>
@@ -199,43 +202,12 @@ function Navbar() {
                         _hover={{ bg: "gray.700" }}
                         onClick={handleClickProfile}
                       >
-                        👤 Ver Perfil
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        justifyContent="start"
-                        w="full"
-                        color="white"
-                        _hover={{ bg: "gray.700" }}
-                        onClick={() => navigate("/my-competitions")}
-                      >
-                        🏆 Mis Competencias
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        justifyContent="start"
-                        w="full"
-                        color="white"
-                        _hover={{ bg: "gray.700" }}
-                        onClick={() => navigate("/notifications")}
-                      >
-                        🔔 Notificaciones
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        justifyContent="start"
-                        w="full"
-                        color="white"
-                        _hover={{ bg: "gray.700" }}
-                        onClick={() => navigate("/settings")}
-                      >
-                        ⚙️ Ajustes
+                        <HStack gap={2}>
+                          <FaUser size={12} />
+                          <Text>Mi Perfil</Text>
+                        </HStack>
                       </Button>
                       
-                      {/* Divider visual usando Box */}
                       <Box h="1px" bg="gray.700" my={1} />
                       
                       <Button
@@ -247,7 +219,10 @@ function Navbar() {
                         _hover={{ bg: "red.900" }}
                         onClick={handleLogout}
                       >
-                        🚪 Cerrar Sesión
+                        <HStack gap={2}>
+                          <FaSignOutAlt size={12} />
+                          <Text>Cerrar Sesión</Text>
+                        </HStack>
                       </Button>
                     </PopoverBody>
                   </PopoverContent>
@@ -261,11 +236,11 @@ function Navbar() {
                 variant="ghost"
                 aria-label="Open menu"
               >
-                <HamburgerIcon />
+                <HiMenu />
               </IconButton>
             </Flex>
           ) : (
-            // Logged Out State
+            // Logged Out State - SIMPLIFICADO
             <Flex gap={3}>
               <Button
                 size="sm"
@@ -283,10 +258,9 @@ function Navbar() {
               </Button>
               <Button
                 size="sm"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/battle/register")}
                 bg="green.500"
                 color="white"
-                display={{ base: "none", sm: "flex" }}
                 _hover={{
                   transform: "translateY(-2px)",
                   shadow: "lg",
@@ -294,42 +268,48 @@ function Navbar() {
                 }}
                 transition="all 0.2s"
               >
-                Registrarse
+                🥊 Registrarse
               </Button>
             </Flex>
           )}
         </Box>
       </Flex>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer - SIMPLIFICADO */}
       <DrawerRoot open={isDrawerOpen} onOpenChange={onDrawerClose}>
         <DrawerBackdrop />
         <DrawerContent bg="gray.900">
           <DrawerHeader color="white" borderBottomWidth="1px" borderColor="gray.700">
             <Flex justify="space-between" align="center">
-              <Text>Menú</Text>
+              <Text fontWeight="bold">WODMATCH BATTLE</Text>
               <DrawerCloseTrigger />
             </Flex>
           </DrawerHeader>
           <DrawerBody>
             <VStack gap={4} align="stretch">
-              <Button variant="ghost" colorScheme="green" w="100%" onClick={() => { navigate("/"); onDrawerClose(); }}>
-                🏠 Inicio
+              <Button 
+                variant="ghost" 
+                colorScheme="green" 
+                w="100%" 
+                onClick={() => { navigate("/"); onDrawerClose(); }}
+              >
+                🥊 Inicio Battle
               </Button>
-              <Button variant="ghost" colorScheme="green" w="100%" onClick={() => { navigate("/create-competition"); onDrawerClose(); }}>
-                ➕ Crear Competencia
+              <Button 
+                variant="ghost" 
+                colorScheme="green" 
+                w="100%" 
+                onClick={() => { navigate("/battle/register"); onDrawerClose(); }}
+              >
+                🎯 Registrarse
               </Button>
-              <Button variant="ghost" colorScheme="green" w="100%" onClick={() => { navigate(`/profile/${currentUser?.uid}`); onDrawerClose(); }}>
-                👤 Perfil
-              </Button>
-              <Button variant="ghost" colorScheme="green" w="100%" onClick={() => { navigate("/my-competitions"); onDrawerClose(); }}>
-                🏆 Mis Competencias
-              </Button>
-              <Button variant="ghost" colorScheme="green" w="100%" onClick={() => { navigate("/notifications"); onDrawerClose(); }}>
-                🔔 Notificaciones
-              </Button>
-              <Button variant="ghost" colorScheme="green" w="100%" onClick={() => { navigate("/settings"); onDrawerClose(); }}>
-                ⚙️ Ajustes
+              <Button 
+                variant="ghost" 
+                colorScheme="green" 
+                w="100%" 
+                onClick={() => { navigate(`/profile/${currentUser?.uid}`); onDrawerClose(); }}
+              >
+                👤 Mi Perfil
               </Button>
 
               <Box h="1px" bg="gray.700" my={2} />

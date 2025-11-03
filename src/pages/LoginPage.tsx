@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
 import { auth } from "../firebase";
 import {
   createUserWithEmailAndPassword,
@@ -16,15 +17,16 @@ import {
   Text,
   Heading,
   Link,
+  Badge,
 } from "@chakra-ui/react";
 
 import { Field } from "@chakra-ui/react";
 import { Card } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   
   // Estados para login
   const [email, setEmail] = useState("");
@@ -36,6 +38,10 @@ function LoginPage() {
   // Estados de UI
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Obtener la ruta de destino desde el estado de ubicación
+  const from = location.state?.from || '/';
+  const message = location.state?.message || '';
 
   // ===== REGISTRO RÁPIDO (Solo 3 campos) =====
   const handleRegister = async (event: React.FormEvent) => {
@@ -62,8 +68,8 @@ function LoginPage() {
 
       toast.success("¡Registro completo! Bienvenido 🎉", { id: "register" });
       
-      // Redirigir a onboarding opcional
-      setTimeout(() => navigate("/"), 1000);
+      // Redirigir a la ruta de origen O a onboarding opcional
+      setTimeout(() => navigate(from, { replace: true }), 1000);
       
     } catch (error: any) {
       console.error("Error en Registro:", error);
@@ -90,7 +96,8 @@ function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast.success("¡Bienvenido de nuevo! 👋");
-      setTimeout(() => navigate("/"), 1000);
+      // Redirigir a la ruta de origen
+      setTimeout(() => navigate(from, { replace: true }), 1000);
     } catch (firebaseError: any) {
       console.error("Error en Login:", firebaseError);
       
@@ -108,12 +115,28 @@ function LoginPage() {
     }
   };
 
+  // Mostrar mensaje personalizado si existe
+  useEffect(() => {
+    if (message) {
+      toast.success(message);
+    }
+  }, [message]);
+
   return (
     <Container
-      maxW={{ base: "100%", sm: "400px", md: "500px" }}  // Responsive max width
-      py={{ base: 10, md: 20 }}  // Responsive padding
-      px={{ base: 4, md: 0 }}   // Responsive horizontal padding
+      maxW={{ base: "100%", sm: "400px", md: "500px" }}
+      py={{ base: 10, md: 20 }}
+      px={{ base: 4, md: 0 }}
     >
+      {/* Mensaje contextual si viene de WODMATCH BATTLE */}
+      {from.includes('battle') && (
+        <Box mb={4} textAlign="center">
+          <Badge colorScheme="green" fontSize="md" px={4} py={2} borderRadius="full">
+            🥊 Completa tu registro en WODMATCH BATTLE
+          </Badge>
+        </Box>
+      )}
+
       <Card.Root
         bg="gray.800"
         borderColor="gray.700"
@@ -121,12 +144,12 @@ function LoginPage() {
         shadow="2xl"
         borderRadius="lg"
       >
-        <Card.Body p={{ base: 6, md: 8 }}>  {/* Responsive padding */}
+        <Card.Body p={{ base: 6, md: 8 }}>
           <VStack gap={6} align="stretch">
             {/* Header */}
             <Box textAlign="center">
               <Heading
-                size={{ base: "xl", md: "2xl" }}  // Responsive heading
+                size={{ base: "xl", md: "2xl" }}
                 mb={2}
                 bgGradient="linear(to-r, green.300, green.500)"
                 bgClip="text"
@@ -155,7 +178,7 @@ function LoginPage() {
                       onChange={(e) => setNombre(e.target.value)}
                       placeholder="Juan"
                       required
-                      size={{ base: "lg", md: "md" }}  // Responsive size
+                      size={{ base: "lg", md: "md" }}
                       bg="gray.900"
                       borderColor="gray.600"
                       _hover={{ borderColor: "green.500" }}
@@ -243,7 +266,7 @@ function LoginPage() {
                   type="submit"
                   width="100%"
                   colorScheme="green"
-                  size={{ base: "lg", md: "md" }}  // Responsive size
+                  size={{ base: "lg", md: "md" }}
                   mt={2}
                   loading={isLoading}
                   _hover={{ transform: "translateY(-2px)", shadow: "lg" }}

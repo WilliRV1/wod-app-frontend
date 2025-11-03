@@ -170,7 +170,22 @@ const EditProfilePage = () => {
     );
   }
 
-  if (!userProfile || !currentUser) {
+  if (!currentUser) {
+    return (
+      <Center h="100vh" bg={containerBg}>
+        <VStack gap={4}>
+          <Text color={textColor} fontSize="xl">
+            Usuario no autenticado.
+          </Text>
+          <Button colorScheme="green" onClick={() => navigate("/login")}>
+            Ir al login
+          </Button>
+        </VStack>
+      </Center>
+    );
+  }
+
+  if (!userProfile) {
     return (
       <Center h="100vh" bg={containerBg}>
         <VStack gap={4}>

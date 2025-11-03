@@ -1,6 +1,7 @@
 import React from 'react';
-import { Heading, Text, Stack, Icon, Flex, Box } from '@chakra-ui/react';
+import { Heading, Text, Stack, Icon, Flex, Box, Button, VStack } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export interface Competition {
   _id: string;
@@ -15,13 +16,23 @@ interface CompetitionCardProps {
 
 const CompetitionCard: React.FC<CompetitionCardProps> = ({ competition }) => {
   const navigate = useNavigate();
-  
+  const { currentUser } = useAuth();
+
   const formattedDate = new Date(competition.fecha).toLocaleDateString('es-CO', {
     year: 'numeric', month: 'long', day: 'numeric',
   });
 
   const handleClick = () => {
     navigate(`/competitions/${competition._id}`);
+  };
+
+  const handleRegisterClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    if (currentUser) {
+      navigate('/battle/register');
+    } else {
+      navigate('/login');
+    }
   };
 
   return (
@@ -72,6 +83,18 @@ const CompetitionCard: React.FC<CompetitionCardProps> = ({ competition }) => {
             </Text>
           </Flex>
         </Flex>
+
+        {/* Registration Button */}
+        <VStack align="stretch" gap={2}>
+          <Button
+            colorScheme="green"
+            size="sm"
+            onClick={handleRegisterClick}
+            w="full"
+          >
+            🔥 Registrarme para Battle
+          </Button>
+        </VStack>
       </Stack>
     </Box>
   );
