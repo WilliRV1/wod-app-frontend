@@ -20,9 +20,7 @@ import {
   FaDollarSign,
 
 } from 'react-icons/fa';
-import crossfitVideo from '../assets/CrossFit Promo Video.mp4';
-import wodmatchLogo from '../assets/VERSIÓN ICONO + TEXTO.svg';
-import socioLogo from '../assets/Diseño sin título.svg'; // Ajusta la ruta
+
 
 // Datos del evento
 const BATTLE_DATA = {
@@ -51,6 +49,9 @@ const BATTLE_DATA = {
 };
 
 function WODMatchBattleLanding() {
+  const crossfitVideo = '/CrossFit Promo Video.mp4';
+const wodmatchLogo = '/VERSIÓN SOLO ICONO (NEGRO).svg';
+const socioLogo = '/Diseño sin título.svg';
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0 });
   const [isEarlyBird, setIsEarlyBird] = useState(false);
