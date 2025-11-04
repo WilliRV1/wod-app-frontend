@@ -18,7 +18,6 @@ import {
   Center,
   Spinner,
   Input,
-  Textarea,
 } from "@chakra-ui/react";
 import { Field } from "@chakra-ui/react";
 import { NativeSelectRoot, NativeSelectField } from "@chakra-ui/react";

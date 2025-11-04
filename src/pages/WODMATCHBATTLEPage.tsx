@@ -18,7 +18,7 @@ import {
   FaClock,
   FaMapMarkerAlt,
   FaDollarSign,
-  FaChevronDown,
+
 } from 'react-icons/fa';
 
 // Datos del evento
@@ -91,13 +91,6 @@ function WODMatchBattleLanding() {
 
   const cuposRestantes = BATTLE_DATA.cuposDisponibles;
   const precio = isEarlyBird ? BATTLE_DATA.precioEarlyBird : BATTLE_DATA.precio;
-
-  const scrollToContent = () => {
-    window.scrollTo({
-      top: window.innerHeight - 100,
-      behavior: 'smooth'
-    });
-  };
 
   return (
     <Box minH="100vh" bg="gray.900">

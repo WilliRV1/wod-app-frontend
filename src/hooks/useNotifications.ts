@@ -5,7 +5,7 @@ import {
   loadNotificationHistory,
   markNotificationAsRead
 } from '../services/notification.service';
-import type { NotificationPreferences, PushNotification } from '../services/notification.service';
+import type { PushNotification } from '../services/notification.service';
 
 export const useNotifications = () => {
   const { currentUser } = useAuth();
