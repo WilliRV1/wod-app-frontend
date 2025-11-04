@@ -21,7 +21,7 @@ import {
 
 } from 'react-icons/fa';
 import crossfitVideo from '../assets/CrossFit Promo Video.mp4';
-import wodmatchLogo from '../assets/VERSIÓN SOLO ICONO (NEGRO).svg';
+import wodmatchLogo from '../assets/VERSIÓN ICONO + TEXTO.svg';
 import socioLogo from '../assets/Diseño sin título.svg'; // Ajusta la ruta
 
 // Datos del evento
