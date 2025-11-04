@@ -17,9 +17,6 @@ import {
   Spinner,
   IconButton,
 } from "@chakra-ui/react";
-import { Field } from "@chakra-ui/react";
-import { Switch } from "@chakra-ui/react";
-import { Alert } from "@chakra-ui/react";
 import { FaArrowLeft, FaBell, FaTrash, FaCheck } from "react-icons/fa";
 import {
   loadNotificationHistory,
