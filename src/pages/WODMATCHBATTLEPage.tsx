@@ -49,9 +49,9 @@ const BATTLE_DATA = {
 };
 
 function WODMatchBattleLanding() {
-  const crossfitVideo = '/CrossFit Promo Video.mp4';
-const wodmatchLogo = '/VERSIÓN SOLO ICONO (NEGRO).svg';
-const socioLogo = '/Diseño sin título.svg';
+ const crossfitVideo = '/crossfit-video.mp4';
+  const wodmatchLogo = '/wodmatch-logo.svg';
+  const socioLogo = '/coach-piperubio.svg';
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0 });
   const [isEarlyBird, setIsEarlyBird] = useState(false);
