@@ -20,6 +20,9 @@ import {
   FaDollarSign,
 
 } from 'react-icons/fa';
+import crossfitVideo from '../assets/CrossFit Promo Video.mp4';
+import wodmatchLogo from '../assets/VERSIÓN SOLO ICONO (NEGRO).svg';
+import socioLogo from '../assets/Diseño sin título.svg'; // Ajusta la ruta
 
 // Datos del evento
 const BATTLE_DATA = {
@@ -160,25 +163,17 @@ function WODMatchBattleLanding() {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              filter: 'brightness(0.3)'
+              filter: 'brightness(0.7)'
             }}
           >
             <source
-              src="https://assets.codepen.io/3364143/7b5d3d346a4d41647e4c0e8c66c8484b.mp4"
+              src= {crossfitVideo}
               type="video/mp4"
             />
             {/* Fallback image si el video no carga */}
           </video>
-          {/* Fallback image */}
-          <Box
-            position="absolute"
-            top="0"
-            left="0"
-            right="0"
-            bottom="0"
-            bg="linear-gradient(45deg, #1a202c 0%, #2d3748 100%)"
-            opacity="0.8"
-          />
+          
+          
         </Box>
 
         {/* Efecto de glow */}
@@ -189,202 +184,255 @@ function WODMatchBattleLanding() {
           w="600px"
           h="600px"
           bg="green.500"
-          opacity="0.15"
-          filter="blur(150px)"
+          opacity="0.20"
+          filter="blur(130px)"
           transform="translateX(-50%)"
           borderRadius="full"
           zIndex="1"
         />
 
         <Container maxW="container.xl" position="relative" zIndex="2">
-          <VStack gap={8} textAlign="center">
-            {/* Badge inaugural */}
-            <Badge
-              colorScheme="green"
-              fontSize="md"
-              px={6}
-              py={2}
-              borderRadius="full"
-              textTransform="uppercase"
-              letterSpacing="wider"
-              boxShadow="0 0 20px rgba(0, 209, 161, 0.3)"
-              bg="green.600"
-            >
-              🔥 Evento Inaugural
-            </Badge>
+  <VStack gap={8} textAlign="center" w="100%">
+    {/* Badge inaugural */}
+    <Badge
+      colorScheme="green"
+      fontSize="md"
+      px={6}
+      py={2}
+      borderRadius="full"
+      textTransform="uppercase"
+      letterSpacing="wider"
+      boxShadow="0 0 20px rgba(0, 209, 161, 0.3)"
+      bg="green.600"
+    >
+      🔥 Evento Inaugural
+    </Badge>
 
-            {/* Logo/Título */}
-            <VStack gap={4}>
-              <Heading
-                fontSize={{ base: "4xl", md: "6xl", lg: "8xl" }}
-                fontWeight="black"
-                bgGradient="linear(to-r, green.300, green.500, green.300)"
-                bgClip="text"
-                letterSpacing="tight"
-                lineHeight="1"
-                textShadow="0 0 30px rgba(0, 209, 161, 0.5)"
-              >
-                WOD MATCH
-                <br />
-                BATTLE
-              </Heading>
-              
-              <Text
-                fontSize={{ base: "xl", md: "2xl", lg: "3xl" }}
-                color="gray.300"
-                fontWeight="semibold"
-                maxW="800px"
-                textShadow="0 2px 4px rgba(0,0,0,0.5)"
-              >
-                El primer torneo bracket 1vs1 de CrossFit en Colombia
-              </Text>
-            </VStack>
+    {/* Logos CENTRADOS */}
+    <VStack gap={4} w="100%">
+      <Flex 
+        direction={{ base: "column", md: "row" }} // Columna en móvil, fila en desktop
+        gap={{ base: 4, md: 6, lg: 8 }} 
+        justify="center" 
+        align="center"
+        w="100%"
+        maxW="800px"
+        mx="auto" // Esto centra el flex container
+      >
+        {/* Tu logo */}
+        <Box 
+          textAlign="center"
+          maxW={{ base: "150px", md: "180px", lg: "200px" }}
+          flexShrink={0}
+        >
+          <img 
+            src={wodmatchLogo} 
+            alt="WOD MATCH" 
+            style={{ 
+              width: '100%', 
+              height: 'auto',
+              filter: 'drop-shadow(0 0 20px rgba(0, 209, 161, 0.5))'
+            }}
+          />
+        </Box>
 
-            {/* Info rápida */}
-            <Flex
-              gap={{ base: 4, md: 8 }}
-              flexWrap="wrap"
-              justify="center"
-              fontSize={{ base: "md", md: "lg" }}
-              color="gray.300"
-              textShadow="0 1px 2px rgba(0,0,0,0.5)"
-            >
-              <HStack gap={2}>
-                <FaMapMarkerAlt color="#00D1A1" />
-                <Text>{BATTLE_DATA.ciudad}</Text>
-              </HStack>
-              <HStack gap={2}>
-                <FaClock color="#00D1A1" />
-                <Text>
-                  {new Date(BATTLE_DATA.fecha).toLocaleDateString('es-CO', {
-                    day: 'numeric',
-                    month: 'short'
-                  })} - {new Date(BATTLE_DATA.fechaFin).toLocaleDateString('es-CO', {
-                    day: 'numeric',
-                    month: 'short'
-                  })}
-                </Text>
-              </HStack>
-              <HStack gap={2}>
-                <FaDollarSign color="#00D1A1" />
-                <Text>
-                  ${precio.toLocaleString('es-CO')} COP
-                </Text>
-              </HStack>
-            </Flex>
+        {/* Signo + (solo en desktop) */}
+        <Text 
+          fontSize={{ base: "3xl", md: "4xl" }} 
+          color="green.400"
+          fontWeight="bold"
+          display={{ base: "none", md: "block" }}
+        >
+          +
+        </Text>
 
-            {/* CTA Principal */}
-            <VStack gap={4} w="100%" maxW="600px" pt={6}>
-              {isEarlyBird && (
-                <Box
-                  bg="orange.900"
-                  borderColor="orange.500"
-                  borderWidth="2px"
-                  p={4}
-                  borderRadius="lg"
-                  w="100%"
-                  boxShadow="0 0 20px rgba(237, 137, 54, 0.3)"
-                >
-                  <Text color="orange.200" fontSize="sm" fontWeight="bold">
-                    🎯 EARLY BIRD ACTIVO - Ahorra $10.000
-                  </Text>
-                  <Text color="orange.100" fontSize="xs" mt={1}>
-                    Válido hasta {new Date(BATTLE_DATA.earlyBirdHasta).toLocaleDateString('es-CO')}
-                  </Text>
-                </Box>
-              )}
+        {/* Logo del socio */}
+        <Box 
+          textAlign="center"
+          maxW={{ base: "150px", md: "180px", lg: "200px" }}
+          flexShrink={0}
+        >
+          <img 
+            src={socioLogo}
+            alt="COACH PIPERUBIO" 
+            style={{ 
+              width: '100%', 
+              height: 'auto',
+              filter: 'drop-shadow(0 0 20px rgba(0, 209, 161, 0.3))'
+            }}
+          />
+        </Box>
+      </Flex>
+      
+      <Text
+        fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
+        color="white"
+        fontWeight="semibold"
+        maxW="800px"
+        textShadow="0 2px 8px rgba(0,0,0,0.8)"
+        
+        px={0}
+        py={3}
+        borderRadius="xl"
+        mt={{ base: 2, md: 4 }}
+      >
+        El primer torneo bracket 1vs1 de CrossFit en Colombia
+      </Text>
+    </VStack>
 
-              <Button
-                size="xl"
-                h={{ base: "60px", md: "80px" }}
-                fontSize={{ base: "xl", md: "2xl" }}
-                w="100%"
-                bg="green.500"
-                color="white"
-                onClick={() => navigate('/battle/register')}
-                _hover={{
-                  bg: "green.600",
-                  transform: "translateY(-4px)",
-                  shadow: "0 0 50px rgba(0, 209, 161, 0.6)",
-                }}
-                transition="all 0.3s"
-                boxShadow="0 0 30px rgba(0, 209, 161, 0.4)"
-              >
-                <HStack>
-                  <FaBolt size={28} />
-                  <Text>REGISTRARME AHORA</Text>
-                </HStack>
-              </Button>
+    
+    {/* CTA Principal RESPONSIVE */}
+    <VStack gap={4} w="100%" maxW="600px" pt={6}>
+     
 
-              {/* Contador de cupos */}
-              <Flex
-                justify="space-between"
-                align="center"
-                w="100%"
-                p={5}
-                bg="gray.800"
-                borderRadius="lg"
-                borderWidth="2px"
-                borderColor={cuposRestantes < 20 ? "red.500" : "gray.700"}
-                boxShadow="0 4px 12px rgba(0,0,0,0.3)"
-              >
-                <Text fontSize="lg" color="gray.300" fontWeight="medium">
-                  Cupos disponibles:
-                </Text>
-                <Badge
-                  colorScheme={cuposRestantes < 20 ? "red" : "green"}
-                  fontSize="xl"
-                  px={5}
-                  py={2}
-                  fontWeight="bold"
-                >
-                  {cuposRestantes}/{BATTLE_DATA.cuposTotal}
-                </Badge>
-              </Flex>
-            </VStack>
-
-            {/* Countdown */}
-            {countdown.days > 0 && (
-              <Box
-                mt={8}
-                p={8}
-                bg="gray.800"
-                borderRadius="2xl"
-                borderWidth="2px"
-                borderColor="green.500"
-                boxShadow="0 0 30px rgba(0, 209, 161, 0.2)"
-              >
-                <Text fontSize="lg" color="gray.400" mb={6} fontWeight="bold">
-                  COMIENZA EN:
-                </Text>
-                <HStack gap={{ base: 4, md: 8 }} justify="center">
-                  <VStack gap={1}>
-                    <Text fontSize={{ base: "4xl", md: "6xl" }} fontWeight="black" color="green.400">
-                      {countdown.days}
-                    </Text>
-                    <Text fontSize="sm" color="gray.500" textTransform="uppercase">DÍAS</Text>
-                  </VStack>
-                  <Text fontSize="5xl" color="gray.600">:</Text>
-                  <VStack gap={1}>
-                    <Text fontSize={{ base: "4xl", md: "6xl" }} fontWeight="black" color="green.400">
-                      {countdown.hours}
-                    </Text>
-                    <Text fontSize="sm" color="gray.500" textTransform="uppercase">HORAS</Text>
-                  </VStack>
-                  <Text fontSize="5xl" color="gray.600">:</Text>
-                  <VStack gap={1}>
-                    <Text fontSize={{ base: "4xl", md: "6xl" }} fontWeight="black" color="green.400">
-                      {countdown.minutes}
-                    </Text>
-                    <Text fontSize="sm" color="gray.500" textTransform="uppercase">MIN</Text>
-                  </VStack>
-                </HStack>
-              </Box>
-            )}
+      <Button
+        size={{ base: "lg", md: "xl" }}
+        h={{ base: "50px", md: "60px", lg: "70px" }}
+        fontSize={{ base: "lg", md: "xl", lg: "2xl" }}
+        w="100%"
+        bg="green.500"
+        color="white"
+        onClick={() => navigate('/battle/register')}
+        _hover={{
+          bg: "green.600",
+          transform: "translateY(-4px)",
+          shadow: "0 0 50px rgba(0, 209, 161, 0.6)",
+        }}
+        transition="all 0.3s"
+        boxShadow="0 0 30px rgba(0, 209, 161, 0.4)"
+      >
+        <HStack>
+          <FaBolt size={24} />
+          <Text>REGISTRARME AHORA</Text>
+        </HStack>
+      </Button>
+      {/* Info rápida MEJORADA */}
+    <Flex
+      gap={{ base: 2, md: 6, lg: 8 }}
+      flexWrap="wrap"
+      justify="center"
+      fontSize={{ base: "sm", md: "md", lg: "lg" }}
+      color="white"
+      textShadow="0 1px 4px rgba(0, 0, 0, 0.8)"
+      bg="rgba(0, 0, 0, 0.5)"
+      px={{ base: 4, md: 6 }}
+      py={{ base: 3, md: 4 }}
+      borderRadius="lg"
+      w={{ base: "90%", md: "auto" }}
+      maxW="600px"
+    >
+      <HStack gap={2}>
+        <FaMapMarkerAlt color="#00D1A1" size={18} />
+        <Text fontWeight="medium">{BATTLE_DATA.ciudad}</Text>
+      </HStack>
+      <HStack gap={2}>
+        <FaClock color="#00D1A1" size={18} />
+        <Text fontWeight="medium">
+          {new Date(BATTLE_DATA.fecha).toLocaleDateString('es-CO', {
+            day: 'numeric',
+            month: 'short'
+          })} - {new Date(BATTLE_DATA.fechaFin).toLocaleDateString('es-CO', {
+            day: 'numeric',
+            month: 'short'
+          })}
+        </Text>
+      </HStack>
+      <HStack gap={2}>
+        <FaDollarSign color="#00D1A1" size={18} />
+        <Text fontWeight="medium">
+          ${precio.toLocaleString('es-CO')} COP
+        </Text>
+      </HStack>
+    </Flex>
 
 
+      {/* Contador de cupos RESPONSIVE */}
+      <Flex
+        justify="space-between"
+        align="center"
+        w="100%"
+        p={{ base: 3, md: 4 }}
+        bg="gray.800"
+        borderRadius="lg"
+        borderWidth="2px"
+        borderColor={cuposRestantes < 20 ? "red.500" : "gray.700"}
+        boxShadow="0 4px 12px rgba(0,0,0,0.3)"
+      >
+        <Text fontSize={{ base: "md", md: "lg" }} color="gray.300" fontWeight="medium">
+          Cupos disponibles:
+        </Text>
+        <Badge
+          colorScheme={cuposRestantes < 20 ? "red" : "green"}
+          fontSize={{ base: "lg", md: "xl" }}
+          px={{ base: 3, md: 4 }}
+          py={{ base: 1, md: 2 }}
+          fontWeight="bold"
+        >
+          {cuposRestantes}/{BATTLE_DATA.cuposTotal}
+        </Badge>
+        
+      </Flex>
+       {isEarlyBird && (
+        <Box
+          bg="orange.900"
+          borderColor="orange.500"
+          borderWidth="2px"
+          p={{ base: 3, md: 4 }}
+          borderRadius="lg"
+          w="100%"
+          boxShadow="0 0 20px rgba(237, 137, 54, 0.3)"
+        >
+          <Text color="orange.200" fontSize={{ base: "xs", md: "sm" }} fontWeight="bold">
+            🎯 EARLY BIRD ACTIVO - Ahorra $10.000
+          </Text>
+          <Text color="orange.100" fontSize={{ base: "xs", md: "xs" }} mt={1}>
+            Válido hasta {new Date(BATTLE_DATA.earlyBirdHasta).toLocaleDateString('es-CO')}
+          </Text>
+        </Box>
+      )}
+    </VStack>
+
+    {/* Countdown RESPONSIVE */}
+    {countdown.days > 0 && (
+      <Box
+        mt={8}
+        p={{ base: 6, md: 8 }}
+        bg="gray.800"
+        borderRadius="2xl"
+        borderWidth="2px"
+        borderColor="green.500"
+        boxShadow="0 0 30px rgba(0, 209, 161, 0.2)"
+        w={{ base: "90%", md: "auto" }}
+      >
+        <Text fontSize={{ base: "md", md: "lg" }} color="gray.400" mb={6} fontWeight="bold">
+          COMIENZA EN:
+        </Text>
+        <HStack gap={{ base: 2, md: 4, lg: 8 }} justify="center">
+          <VStack gap={1}>
+            <Text fontSize={{ base: "2xl", md: "4xl", lg: "6xl" }} fontWeight="black" color="green.400">
+              {countdown.days}
+            </Text>
+            <Text fontSize={{ base: "xs", md: "sm" }} color="gray.500" textTransform="uppercase">DÍAS</Text>
           </VStack>
-        </Container>
+          <Text fontSize={{ base: "3xl", md: "5xl" }} color="gray.600">:</Text>
+          <VStack gap={1}>
+            <Text fontSize={{ base: "2xl", md: "4xl", lg: "6xl" }} fontWeight="black" color="green.400">
+              {countdown.hours}
+            </Text>
+            <Text fontSize={{ base: "xs", md: "sm" }} color="gray.500" textTransform="uppercase">HORAS</Text>
+          </VStack>
+          <Text fontSize={{ base: "3xl", md: "5xl" }} color="gray.600">:</Text>
+          <VStack gap={1}>
+            <Text fontSize={{ base: "2xl", md: "4xl", lg: "6xl" }} fontWeight="black" color="green.400">
+              {countdown.minutes}
+            </Text>
+            <Text fontSize={{ base: "xs", md: "sm" }} color="gray.500" textTransform="uppercase">MIN</Text>
+          </VStack>
+        </HStack>
+      </Box>
+    )}
+  </VStack>
+</Container>
       </Box>
 
       {/* Resto del contenido se mantiene igual */}
