@@ -1,71 +1,112 @@
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
-import HomePage from './pages/homepage';
-import LoginPage from './pages/LoginPage';
-import CompetitionDetailPage from "./pages/CompetitionDetailPage";
-import CreateCompetitionPage from './pages/CreateCompetitionPage'; // Import CreateCompetitionPage
-import CreateBoxPage from './pages/CreateBoxPage'; // <-- Import the new page
-import { ChakraProvider, defaultSystem, Box } from "@chakra-ui/react";
-import Navbar from './components/NavBar'; // Tu Navbar
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { ChakraProvider, Box } from "@chakra-ui/react";
+import { defaultSystem } from "@chakra-ui/react";
+import Navbar from './components/NavBar';
 import { Toaster } from 'react-hot-toast';
+import LoginPage from './pages/LoginPage';
+import ProfilePage from "./pages/ProfilePage";
+import WODMATCHBATTLEPage from "./pages/WODMATCHBATTLEPage";
+import BattleRegistrationPage from "./pages/BattleRegistrationPage";
+import BattleAdminPanel from "./pages/BattleAdminPanel"; // 👈 AGREGAR ESTA IMPORTACIÓN
+import { initializeNotifications } from './services/notification.service';
+import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
+  // Initialize notifications on app start
+  React.useEffect(() => {
+    initializeNotifications();
+  }, []);
+
   return (
     <ChakraProvider value={defaultSystem}>
-
-      <Navbar />
-
-      {/* 2. Contenedor principal de la página */}
-      <Box
-        as="main"
-        // Use minHeight to ensure footer (if any) is pushed down, or content fills viewport
-        minH="calc(100vh - 80px)" // Adjust 80px based on Navbar height
-        pt="80px" // Same value as minH adjustment and Navbar height
-        w="100%"
-        bg="gray.900" // Apply a background color if desired
-        color="white" // Default text color for children
-      >
-        {/* 3. Contenedor CENTRADO para tu contenido */}
+      <AuthProvider>
+        {/* Contenedor principal con fondo oscuro */}
         <Box
-          maxW="container.lg" // Consistent width with Navbar
-          mx="auto" // Centra el contenedor
-          px={5}    // Padding idéntico al del Navbar
-          pb={10} // Add some padding at the bottom
+          minH="100vh"
+          w="100%"
+          bg="gray.900"
+          color="white"
         >
-          {/* Aquí viven tus páginas */}
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/competitions/:id" element={<CompetitionDetailPage />}/>
-            <Route path="/create-competition" element={<CreateCompetitionPage />} />
-            {/* --- NUEVA RUTA para crear Box --- */}
-            <Route path="/create-box" element={<CreateBoxPage />} />
-            {/* Add other routes here */}
-          </Routes>
+          {/* Navbar */}
+          <Navbar />
+
+          {/* Contenedor principal de la página */}
+          <Box
+            as="main"
+            minH="100vh"
+            pt={{ base: "60px", md: "80px" }}
+            w="100%"
+            bg="gray.900"
+          >
+            {/* Contenedor CENTRADO para tu contenido */}
+            <Box
+              maxW="container.xl"
+              mx="auto"
+              px={{ base: 4, md: 6, lg: 8 }}
+              pb={10}
+            >
+              {/* Rutas - Solo WODMATCH BATTLE */}
+              <Routes>
+                {/* Página principal - WODMATCH BATTLE */}
+                <Route path="/" element={<WODMATCHBATTLEPage />} />
+                
+                {/* Rutas de WODMATCH BATTLE */}
+                <Route path="/battle" element={<WODMATCHBATTLEPage />} />
+                <Route path="/battle/register" element={<BattleRegistrationPage />} />
+                
+                {/* 👈 AGREGAR RUTA DEL PANEL ADMIN */}
+                <Route path="/battle/admin" element={<BattleAdminPanel />} />
+                
+                {/* Login (mantenemos para autenticación) */}
+                <Route path="/login" element={<LoginPage />} />
+                
+                {/* Perfil de usuario (mantenemos básico) */}
+                <Route path="/profile/:uid" element={<ProfilePage />} />
+                
+                {/* Redireccionar todas las demás rutas a WODMATCH BATTLE */}
+                <Route path="/competitions" element={<Navigate to="/" replace />} />
+                <Route path="/competitions/:id" element={<Navigate to="/" replace />} />
+                <Route path="/create-competition" element={<Navigate to="/" replace />} />
+                <Route path="/create-box" element={<Navigate to="/" replace />} />
+                <Route path="/edit-profile" element={<Navigate to="/" replace />} />
+                <Route path="/notifications" element={<Navigate to="/" replace />} />
+                <Route path="/my-competitions" element={<Navigate to="/" replace />} />
+                <Route path="/settings" element={<Navigate to="/" replace />} />
+                
+                {/* Catch-all route - redirige a WODMATCH BATTLE */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Box>
+          </Box>
         </Box>
-      </Box>
-      <Toaster
-        position="bottom-right" // Position the toasts
-        toastOptions={{
-          // Default options
-          duration: 5000,
-          style: {
-            background: '#363636',
-            color: '#fff',
-          },
-          // Options for specific types
-          success: {
-            duration: 3000,
-            theme: {
-              primary: 'green',
-              secondary: 'black',
+
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            duration: 5000,
+            style: {
+              background: '#363636',
+              color: '#fff',
             },
-          },
-           error: {
-            duration: 7000, // Longer duration for errors
-          },
-        }}
-      />
+            success: {
+              duration: 3000,
+              style: {
+                background: '#065f46',
+                color: '#fff',
+              },
+            },
+            error: {
+              duration: 7000,
+              style: {
+                background: '#991b1b',
+                color: '#fff',
+              },
+            },
+          }}
+        />
+      </AuthProvider>
     </ChakraProvider>
   );
 }

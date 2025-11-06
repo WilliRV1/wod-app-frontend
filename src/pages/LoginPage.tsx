@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
 import { auth } from "../firebase";
 import {
   createUserWithEmailAndPassword,
@@ -16,126 +17,148 @@ import {
   Text,
   Heading,
   Link,
-  Stack, // Import Stack if you use it for layout
+  Badge,
 } from "@chakra-ui/react";
 
-import { Field } from "@chakra-ui/react"; // Correct import for Field
-import { RadioGroup } from "@chakra-ui/react"; // Correct import for RadioGroup
-import { Card } from "@chakra-ui/react"; // Correct import for Card
-
-
-import { useNavigate } from "react-router-dom";
+import { Field } from "@chakra-ui/react";
+import { Card } from "@chakra-ui/react";
+import toast from "react-hot-toast";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Estados para login
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
+  // Estados para registro SIMPLIFICADO (solo nombre)
   const [nombre, setNombre] = useState("");
-  const [apellidos, setApellidos] = useState("");
-  const [rol, setRol] = useState<"atleta" | "dueño_box">("atleta");
+  
+  // Estados de UI
   const [isRegistering, setIsRegistering] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Obtener la ruta de destino desde el estado de ubicación
+  const from = location.state?.from || '/';
+  const message = location.state?.message || '';
+
+  // ===== REGISTRO RÁPIDO (Solo 3 campos) =====
   const handleRegister = async (event: React.FormEvent) => {
     event.preventDefault();
-    setError(null);
-    setMessage(null);
     setIsLoading(true);
 
     try {
+      // 1. Crear cuenta en Firebase
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
       const user = userCredential.user;
-      console.log("Usuario creado en Firebase:", user.uid);
+      
+      toast.loading("Creando tu perfil...", { id: "register" });
 
+      // 2. Crear perfil en MongoDB (SIMPLIFICADO)
       await registerUserProfile({
         firebaseUid: user.uid,
         email: user.email || email,
-        nombre,
-        apellidos,
-        rol,
+        nombre: nombre.trim()
       });
 
-      setMessage("¡Registro completo! Redirigiendo...");
-       if (rol === 'dueño_box') {
-            setTimeout(() => navigate("/create-box"), 1500);
-       } else {
-            setTimeout(() => navigate("/"), 1500);
-       }
+      toast.success("¡Registro completo! Bienvenido 🎉", { id: "register" });
+      
+      // Redirigir a la ruta de origen O a onboarding opcional
+      setTimeout(() => navigate(from, { replace: true }), 1000);
+      
     } catch (error: any) {
       console.error("Error en Registro:", error);
+      
       if (error.code === "auth/email-already-in-use") {
-        setError("El correo electrónico ya está registrado.");
+        toast.error("El correo electrónico ya está registrado.");
       } else if (error.code === "auth/weak-password") {
-        setError("La contraseña debe tener al menos 6 caracteres.");
+        toast.error("La contraseña debe tener al menos 6 caracteres.");
+      } else if (error.code === "auth/invalid-email") {
+        toast.error("El correo electrónico no es válido.");
       } else {
-        setError("Error al registrar. Verifica tus datos e intenta de nuevo.");
+        toast.error("Error al registrar. Verifica tus datos.");
       }
     } finally {
       setIsLoading(false);
     }
   };
 
+  // ===== LOGIN =====
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
-    setError(null);
-    setMessage(null);
     setIsLoading(true);
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log("Usuario inició sesión:", userCredential.user.uid);
-      setMessage(`¡Bienvenido de nuevo!`);
-      setTimeout(() => navigate("/"), 1000);
+      await signInWithEmailAndPassword(auth, email, password);
+      toast.success("¡Bienvenido de nuevo! 👋");
+      // Redirigir a la ruta de origen
+      setTimeout(() => navigate(from, { replace: true }), 1000);
     } catch (firebaseError: any) {
-      console.error("Error en Firebase Auth (Login):", firebaseError);
+      console.error("Error en Login:", firebaseError);
+      
       if (
         firebaseError.code === "auth/invalid-credential" ||
         firebaseError.code === "auth/user-not-found" ||
         firebaseError.code === "auth/wrong-password"
       ) {
-        setError("Correo electrónico o contraseña incorrectos.");
+        toast.error("Correo electrónico o contraseña incorrectos.");
       } else {
-        setError("Error al iniciar sesión. Intenta de nuevo.");
+        toast.error("Error al iniciar sesión. Intenta de nuevo.");
       }
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Mostrar mensaje personalizado si existe
+  useEffect(() => {
+    if (message) {
+      toast.success(message);
+    }
+  }, [message]);
+
   return (
-    <Container maxW="md" py={20}>
+    <Container
+      maxW={{ base: "100%", sm: "400px", md: "500px" }}
+      py={{ base: 10, md: 20 }}
+      px={{ base: 4, md: 0 }}
+    >
+      {/* Mensaje contextual si viene de WODMATCH BATTLE */}
+      {from.includes('battle') && (
+        <Box mb={4} textAlign="center">
+          <Badge colorScheme="green" fontSize="md" px={4} py={2} borderRadius="full">
+            🥊 Completa tu registro en WODMATCH BATTLE
+          </Badge>
+        </Box>
+      )}
+
       <Card.Root
         bg="gray.800"
         borderColor="gray.700"
         borderWidth="1px"
         shadow="2xl"
-        borderRadius="lg" // Ensure consistent styling
+        borderRadius="lg"
       >
-        <Card.Body p={8}>
+        <Card.Body p={{ base: 6, md: 8 }}>
           <VStack gap={6} align="stretch">
             {/* Header */}
             <Box textAlign="center">
               <Heading
-                size="2xl"
+                size={{ base: "xl", md: "2xl" }}
                 mb={2}
                 bgGradient="linear(to-r, green.300, green.500)"
                 bgClip="text"
               >
-                {isRegistering ? "Crear Cuenta" : "Bienvenido"}
+                {isRegistering ? "Únete a WOD" : "Bienvenido"}
               </Heading>
               <Text color="gray.400">
                 {isRegistering
-                  ? "Únete a la comunidad WOD"
+                  ? "Regístrate en segundos"
                   : "Inicia sesión para continuar"}
               </Text>
             </Box>
@@ -143,82 +166,46 @@ function LoginPage() {
             {/* Form */}
             <form onSubmit={isRegistering ? handleRegister : handleLogin}>
               <VStack gap={4}>
+                {/* REGISTRO: Solo nombre */}
                 {isRegistering && (
-                  <>
-                    <Field.Root w="100%">
-                      <Field.Label color="gray.300">Nombre</Field.Label>
-                      <Input
-                        type="text"
-                        value={nombre}
-                        onChange={(e) => setNombre(e.target.value)}
-                        required
-                        bg="gray.900"
-                        borderColor="gray.600"
-                        _hover={{ borderColor: "green.500" }}
-                        _focus={{
-                          borderColor: "green.500",
-                          boxShadow:
-                            "0 0 0 1px var(--chakra-colors-green-500)",
-                        }}
-                        color="white"
-                      />
-                    </Field.Root>
-
-                    <Field.Root w="100%">
-                      <Field.Label color="gray.300">Apellidos</Field.Label>
-                      <Input
-                        type="text"
-                        value={apellidos}
-                        onChange={(e) => setApellidos(e.target.value)}
-                        required
-                        bg="gray.900"
-                        borderColor="gray.600"
-                        _hover={{ borderColor: "green.500" }}
-                        _focus={{
-                          borderColor: "green.500",
-                          boxShadow:
-                            "0 0 0 1px var(--chakra-colors-green-500)",
-                        }}
-                        color="white"
-                      />
-                    </Field.Root>
-
-                    {/* Selector de Rol using RadioGroup */}
-                    <Field.Root w="100%">
-                        <Field.Label color="gray.300">¿Qué eres?</Field.Label>
-                        <RadioGroup.Root
-                            value={rol}
-                            onValueChange={(details) => setRol(details.value as 'atleta' | 'dueño_box')}
-                            // Add console.log here for debugging if needed
-                            // onValueChange={(details) => { console.log("Radio changed:", details.value); setRol(details.value as 'atleta' | 'dueño_box'); }}
-                        >
-                            <Flex gap={6} mt={2}> {/* Use Flex for layout */}
-                                <RadioGroup.Item value="atleta" id="atleta-radio">
-                                    <RadioGroup.ItemControl />
-                                    <RadioGroup.ItemText color="white" ml={2}>Atleta</RadioGroup.ItemText>
-                                </RadioGroup.Item>
-                                <RadioGroup.Item value="dueño_box" id="owner-radio">
-                                    <RadioGroup.ItemControl />
-                                    <RadioGroup.ItemText color="white" ml={2}>Dueño de Box</RadioGroup.ItemText>
-                                </RadioGroup.Item>
-                            </Flex>
-                        </RadioGroup.Root>
-                        <Field.HelperText color="gray.500" fontSize="sm" mt={2}>
-                             {rol === 'atleta'
-                                 ? 'Podrás inscribirte a competencias y crear eventos comunitarios.'
-                                 : 'Serás redirigido para crear tu Box después del registro.'} {/* Updated helper text */}
-                        </Field.HelperText>
-                    </Field.Root>
-                  </>
+                  <Field.Root w="100%" required>
+                    <Field.Label color="gray.300">
+                      ¿Cómo te llamas? <Text as="span" color="red.400">*</Text>
+                    </Field.Label>
+                    <Input
+                      type="text"
+                      value={nombre}
+                      onChange={(e) => setNombre(e.target.value)}
+                      placeholder="Juan"
+                      required
+                      size={{ base: "lg", md: "md" }}
+                      bg="gray.900"
+                      borderColor="gray.600"
+                      _hover={{ borderColor: "green.500" }}
+                      _focus={{
+                        borderColor: "green.500",
+                        boxShadow: "0 0 0 1px var(--chakra-colors-green-500)",
+                      }}
+                      color="white"
+                      autoFocus
+                    />
+                    <Field.HelperText color="gray.500" fontSize="xs" mt={1}>
+                      Puedes completar tu apellido después
+                    </Field.HelperText>
+                  </Field.Root>
                 )}
 
-                <Field.Root w="100%">
-                  <Field.Label color="gray.300">Correo Electrónico</Field.Label>
+                {/* Email */}
+                <Field.Root w="100%" required>
+                  <Field.Label color="gray.300">
+                    Correo Electrónico <Text as="span" color="red.400">*</Text>
+                  </Field.Label>
                   <Input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    size={{ base: "lg", md: "md" }}
                     bg="gray.900"
                     borderColor="gray.600"
                     _hover={{ borderColor: "green.500" }}
@@ -231,13 +218,17 @@ function LoginPage() {
                   />
                 </Field.Root>
 
-                <Field.Root w="100%">
-                  <Field.Label color="gray.300">Contraseña</Field.Label>
+                {/* Contraseña */}
+                <Field.Root w="100%" required>
+                  <Field.Label color="gray.300">
+                    Contraseña <Text as="span" color="red.400">*</Text>
+                  </Field.Label>
                   <Input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    size={{ base: "lg", md: "md" }}
                     bg="gray.900"
                     borderColor="gray.600"
                     _hover={{ borderColor: "green.500" }}
@@ -247,25 +238,15 @@ function LoginPage() {
                     }}
                     color="white"
                     placeholder="••••••••"
+                    minLength={6}
                   />
+                  <Field.HelperText color="gray.500" fontSize="xs" mt={1}>
+                    Mínimo 6 caracteres
+                  </Field.HelperText>
                 </Field.Root>
 
-                {/* Mensajes */}
-                {error && (
-                  <Box
-                    w="100%"
-                    p={3}
-                    bg="red.900"
-                    borderRadius="md"
-                    borderColor="red.500"
-                    borderWidth="1px"
-                  >
-                    <Text color="red.200" fontSize="sm">
-                      {error}
-                    </Text>
-                  </Box>
-                )}
-                {message && (
+                {/* Mensaje informativo para registro */}
+                {isRegistering && (
                   <Box
                     w="100%"
                     p={3}
@@ -275,18 +256,19 @@ function LoginPage() {
                     borderWidth="1px"
                   >
                     <Text color="green.200" fontSize="sm">
-                      {message}
+                      ✨ Solo 3 campos. ¡Completa tu perfil después!
                     </Text>
                   </Box>
                 )}
 
+                {/* Botón de Submit */}
                 <Button
                   type="submit"
                   width="100%"
                   colorScheme="green"
-                  size="lg"
+                  size={{ base: "lg", md: "md" }}
                   mt={2}
-                  loading={isLoading} // Correct prop name
+                  loading={isLoading}
                   _hover={{ transform: "translateY(-2px)", shadow: "lg" }}
                   transition="all 0.2s"
                 >
@@ -295,7 +277,7 @@ function LoginPage() {
               </VStack>
             </form>
 
-            {/* Alternar entre login/register */}
+            {/* Toggle Login/Register */}
             <Flex
               justify="center"
               align="center"
@@ -303,7 +285,7 @@ function LoginPage() {
               pt={4}
               borderTopWidth="1px"
               borderColor="gray.700"
-              mt={6} // Added margin top for spacing
+              mt={6}
             >
               <Text color="gray.400" fontSize="sm">
                 {isRegistering
@@ -316,13 +298,9 @@ function LoginPage() {
                 fontSize="sm"
                 onClick={() => {
                   setIsRegistering(!isRegistering);
-                  setError(null);
-                  setMessage(null);
-                  // Optionally clear fields when switching
-                  // setEmail('');
-                  // setPassword('');
-                  // setNombre('');
-                  // setApellidos('');
+                  setNombre("");
+                  setEmail("");
+                  setPassword("");
                 }}
                 _hover={{ color: "green.300", textDecoration: "underline" }}
                 cursor="pointer"
@@ -338,4 +316,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-

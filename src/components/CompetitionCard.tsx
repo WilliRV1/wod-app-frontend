@@ -1,6 +1,7 @@
 import React from 'react';
-import { Heading, Text, Stack, Icon, Flex, Box } from '@chakra-ui/react';
+import { Heading, Text, Stack, Icon, Flex, Box, Button, VStack } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export interface Competition {
   _id: string;
@@ -15,7 +16,8 @@ interface CompetitionCardProps {
 
 const CompetitionCard: React.FC<CompetitionCardProps> = ({ competition }) => {
   const navigate = useNavigate();
-  
+  const { currentUser } = useAuth();
+
   const formattedDate = new Date(competition.fecha).toLocaleDateString('es-CO', {
     year: 'numeric', month: 'long', day: 'numeric',
   });
@@ -24,14 +26,23 @@ const CompetitionCard: React.FC<CompetitionCardProps> = ({ competition }) => {
     navigate(`/competitions/${competition._id}`);
   };
 
+  const handleRegisterClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    if (currentUser) {
+      navigate('/battle/register');
+    } else {
+      navigate('/login');
+    }
+  };
+
   return (
-    <Box 
-      borderWidth="1px" 
-      borderRadius="lg" 
-      overflow="hidden" 
-      p={5} 
-      mb={4} 
-      bg="gray.800" 
+    <Box
+      borderWidth="1px"
+      borderRadius="lg"
+      overflow="hidden"
+      p={{ base: 4, md: 5, lg: 6 }}  // Responsive padding
+      mb={4}
+      bg="gray.800"
       borderColor="gray.700"
       cursor="pointer"
       onClick={handleClick}
@@ -43,29 +54,47 @@ const CompetitionCard: React.FC<CompetitionCardProps> = ({ competition }) => {
         bg: 'gray.750'
       }}
     >
-      <Stack gap={3} textAlign="left"> 
-        <Heading 
-          size="lg"
+      <Stack gap={3} textAlign="left">
+        <Heading
+          size={{ base: "md", md: "lg" }}  // Responsive size
           color="white"
           _hover={{ color: 'green.400' }}
           transition="color 0.2s"
         >
           {competition.nombre}
         </Heading>
-        
-        <Flex alignItems="center" gap={2}>
-          <Icon as={CalendarIcon} color="green.400" boxSize={4} /> 
-          <Text fontSize="md" color="gray.300" fontWeight="medium">
-            {formattedDate}
-          </Text>
+
+        <Flex
+          direction={{ base: "column", sm: "row" }}  // Responsive direction
+          align={{ base: "flex-start", sm: "center" }}
+          gap={2}
+        >
+          <Flex alignItems="center" gap={2}>
+            <Icon as={CalendarIcon} color="green.400" boxSize={4} />
+            <Text fontSize="md" color="gray.300" fontWeight="medium">
+              {formattedDate}
+            </Text>
+          </Flex>
+
+          <Flex alignItems="center" gap={2}>
+            <Icon as={LocationIcon} color="green.400" boxSize={4} />
+            <Text fontSize="md" color="gray.300" fontWeight="medium">
+              {competition.lugar}
+            </Text>
+          </Flex>
         </Flex>
-        
-        <Flex alignItems="center" gap={2}>
-          <Icon as={LocationIcon} color="green.400" boxSize={4} />
-          <Text fontSize="md" color="gray.300" fontWeight="medium">
-            {competition.lugar}
-          </Text>
-        </Flex>
+
+        {/* Registration Button */}
+        <VStack align="stretch" gap={2}>
+          <Button
+            colorScheme="green"
+            size="sm"
+            onClick={handleRegisterClick}
+            w="full"
+          >
+            🔥 Registrarme para Battle
+          </Button>
+        </VStack>
       </Stack>
     </Box>
   );
