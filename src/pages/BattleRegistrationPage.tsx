@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createBattleRegistration, createPaymentPreference, openMercadoPagoCheckout } from '../services/mercadopago.service';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -15,9 +16,29 @@ import {
   Flex,
   Progress,
 } from '@chakra-ui/react';
+import toast from 'react-hot-toast';
 import { Field } from '@chakra-ui/react';
 import { FaCheck, FaCheckCircle, FaArrowRight, FaArrowLeft, FaTrophy, FaUsers } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
+
+// Add these type definitions
+type BattleRegistrationData = {
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  email: string;
+  whatsapp: string;
+  category: "intermedio-male" | "intermedio-female" | "scaled-male" | "scaled-female";
+  emergencyName: string;
+  emergencyPhone: string;
+  emergencyRelation: string;
+  medicalConditions: string;
+  medications: string;
+  waiverAccepted: boolean;
+  imageAuthorized: boolean;
+  amount: number;
+};
+
 
 // DATOS DE EJEMPLO (después vendrán del backend) - AÑADE ESTO
 const CATEGORIES = [
@@ -86,9 +107,15 @@ function BattleRegistration() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   
+  
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<"intermedio-male" | "intermedio-female" | "scaled-male" | "scaled-female">("intermedio-male");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [, setIsLoading] = useState(false); // Add missing state
+  
+  // Define precio as a constant
+  const precio = 90000;
+
   const [formData, setFormData] = useState({
     // Datos personales
     firstName: '',
@@ -199,15 +226,87 @@ function BattleRegistration() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handlePayment = () => {
-    // Aquí integrarías MercadoPago
-    console.log('Iniciando pago con:', { 
-      formData, 
-      selectedCategory,
-      userId: currentUser?.uid // Incluye el ID del usuario
+  const handlePayment = async () => {
+  if (!currentUser) {
+    toast.error("Debes iniciar sesión");
+    navigate('/login', {
+      state: {
+        from: '/battle/register',
+        message: 'Inicia sesión para completar tu inscripción'
+      }
     });
-    setCurrentStep(4); // Por ahora simula éxito
-  };
+    return;
+  }
+  setIsLoading(true);
+
+  try {
+    // PASO 1: Crear el registro en la base de datos
+    const loadingToast = toast.loading("Creando tu registro...");
+    
+    const token = await currentUser.getIdToken();
+    const registrationData: BattleRegistrationData = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      birthDate: formData.birthDate,
+      email: formData.email,
+      whatsapp: formData.whatsapp,
+      category: selectedCategory,
+      emergencyName: formData.emergencyName,
+      emergencyPhone: formData.emergencyPhone,
+      emergencyRelation: formData.emergencyRelation,
+      medicalConditions: formData.medicalConditions,
+      medications: formData.medications,
+      waiverAccepted: formData.waiverAccepted,
+      imageAuthorized: formData.imageAuthorized,
+      amount: precio
+    };
+
+    const { registration } = await createBattleRegistration(registrationData, token);
+
+console.log("✅ Registro creado:", registration);
+    toast.dismiss(loadingToast);
+    toast.success("Registro creado");
+
+    // PASO 2: Crear preferencia de pago en MercadoPago
+    const paymentToast = toast.loading("Preparando pago...");
+
+    const preference = await createPaymentPreference(
+      registration.id,
+      {
+        amount: precio,
+        title: `WOD MATCH BATTLE - ${getCategoryData()?.name}`,
+        description: `Inscripción Temporada 1 - ${formData.firstName} ${formData.lastName}`,
+        payer: {
+          name: formData.firstName,
+          surname: formData.lastName,
+          email: formData.email,
+          phone: formData.whatsapp
+        }
+      }
+    );
+
+    console.log("✅ Preferencia creada:", preference.id);
+    toast.dismiss(paymentToast);
+
+    // PASO 3: Redirigir a MercadoPago
+    toast.success("Redirigiendo a MercadoPago...");
+
+    // Guardar el registration ID en localStorage para recuperarlo después
+    localStorage.setItem('pending_battle_registration', registration.id);
+    localStorage.setItem('pending_registration_code', registration.code);
+
+    // Abrir checkout de MercadoPago
+    await openMercadoPagoCheckout(preference.id);
+
+  } catch (error: any) {
+    console.error("Error al procesar pago:", error);
+    toast.error(error.message || "Error al procesar el pago. Intenta de nuevo.");
+  } finally {
+    setIsLoading(false);
+    // Cerrar cualquier toast de loading
+    toast.dismiss();
+  }
+};
 
   const getCategoryData = () => {
     return CATEGORIES.find(c => c.id === selectedCategory);
@@ -274,7 +373,7 @@ function BattleRegistration() {
                     borderRadius="xl"
                     p={6}
                     cursor="pointer"
-                    onClick={() => setSelectedCategory(category.id)}
+                    onClick={() => setSelectedCategory(category.id as any)}
                     transition="all 0.2s"
                     _hover={{
                       borderColor: "green.500",
@@ -1064,7 +1163,7 @@ function BattleRegistration() {
               <Progress.Range />
             </Progress.Track>
           </Progress.Root>
-        </Box>
+        </Box>  
 
         {/* Step Content */}
         <Box minH="500px">

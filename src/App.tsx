@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage';
 import ProfilePage from "./pages/ProfilePage";
 import WODMATCHBATTLEPage from "./pages/WODMATCHBATTLEPage";
 import BattleRegistrationPage from "./pages/BattleRegistrationPage";
+import BattleAdminPanel from "./pages/BattleAdminPanel"; // 👈 AGREGAR ESTA IMPORTACIÓN
 import { initializeNotifications } from './services/notification.service';
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -54,6 +55,9 @@ function App() {
                 {/* Rutas de WODMATCH BATTLE */}
                 <Route path="/battle" element={<WODMATCHBATTLEPage />} />
                 <Route path="/battle/register" element={<BattleRegistrationPage />} />
+                
+                {/* 👈 AGREGAR RUTA DEL PANEL ADMIN */}
+                <Route path="/battle/admin" element={<BattleAdminPanel />} />
                 
                 {/* Login (mantenemos para autenticación) */}
                 <Route path="/login" element={<LoginPage />} />
