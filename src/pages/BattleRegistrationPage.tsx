@@ -296,7 +296,7 @@ console.log("✅ Registro creado:", registration);
     localStorage.setItem('pending_registration_code', registration.code);
 
     // Abrir checkout de MercadoPago
-    await openMercadoPagoCheckout(preference.id);
+    openMercadoPagoCheckout(preference.init_point);
 
   } catch (error: any) {
     console.error("Error al procesar pago:", error);

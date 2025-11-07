@@ -148,27 +148,16 @@ export const initMercadoPagoSDK = () => {
 };
 
 // === HELPER: Abrir checkout de MercadoPago ===
-export const openMercadoPagoCheckout = async (preferenceId: string) => {
+export const openMercadoPagoCheckout = (initPointUrl: string) => {
   try {
-   
+    // Redirección simple
+    window.location.href = initPointUrl;
     
-    // Opción 1: Redirección simple
-    const preference = await getPreferenceById(preferenceId);
-    window.location.href = preference.init_point;
-    
-    // Opción 2: Modal (descomentar si prefieres modal)
-    // mp.checkout({
-    //   preference: {
-    //     id: preferenceId
-    //   },
-    //   autoOpen: true
-    // });
   } catch (error) {
     console.error('Error al abrir checkout:', error);
     throw error;
   }
 };
-
 // === HELPER: Obtener info de preferencia ===
 const getPreferenceById = async (preferenceId: string): Promise<MercadoPagoPreference> => {
   try {

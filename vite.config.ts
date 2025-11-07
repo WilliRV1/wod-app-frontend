@@ -8,6 +8,9 @@ export default defineConfig({
     assetsDir: 'assets'
   },
   server: {
-    port: 3000
+    port: 3000,
+    allowedHosts: [
+      'f66150c41d77.ngrok-free.app'
+    ]
   }
 })

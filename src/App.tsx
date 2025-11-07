@@ -10,6 +10,9 @@ import ProfilePage from "./pages/ProfilePage";
 import WODMATCHBATTLEPage from "./pages/WODMATCHBATTLEPage";
 import BattleRegistrationPage from "./pages/BattleRegistrationPage";
 import BattleAdminPanel from "./pages/BattleAdminPanel"; // 👈 AGREGAR ESTA IMPORTACIÓN
+import PaymentSuccessPage from "./pages/PaymentSuccessPage"; // <-- AGREGA ESTA LÍNEA
+import PaymentFailurePage from "./pages/PaymentFailurePage"; // <-- AGREGA ESTA LÍNEA
+import { PaymentPendingPage } from "./pages/PaymentPendingPage"; // <-- AGREGA ESTA LÍNEA
 import { initializeNotifications } from './services/notification.service';
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -74,6 +77,10 @@ function App() {
                 <Route path="/notifications" element={<Navigate to="/" replace />} />
                 <Route path="/my-competitions" element={<Navigate to="/" replace />} />
                 <Route path="/settings" element={<Navigate to="/" replace />} />
+
+                <Route path="/battle/payment-success" element={<PaymentSuccessPage />} />
+                <Route path="/battle/payment-failure" element={<PaymentFailurePage />} />
+                <Route path="/battle/payment-pending" element={<PaymentPendingPage />} />
                 
                 {/* Catch-all route - redirige a WODMATCH BATTLE */}
                 <Route path="*" element={<Navigate to="/" replace />} />
