@@ -42,6 +42,19 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Event - Cache Strategy
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // Check if it's an API request to your backend or not a GET request
+  const isApiRequest = url.origin.startsWith('http://localhost:5000');
+  const isNotGet = event.request.method !== 'GET';
+
+  // If it's an API request or not a GET request, bypass the cache and go to the network.
+  if (isApiRequest || isNotGet) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // For all other GET requests (static assets, etc.), use the cache-first strategy.
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
