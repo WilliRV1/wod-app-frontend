@@ -2,17 +2,17 @@ import './App.css';
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ChakraProvider, Box } from "@chakra-ui/react";
-import { defaultSystem } from "@chakra-ui/react";
+import { system } from './system';
 import Navbar from './components/NavBar';
 import { Toaster } from 'react-hot-toast';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from "./pages/ProfilePage";
 import WODMATCHBATTLEPage from "./pages/WODMATCHBATTLEPage";
 import BattleRegistrationPage from "./pages/BattleRegistrationPage";
-import BattleAdminPanel from "./pages/BattleAdminPanel"; // 👈 AGREGAR ESTA IMPORTACIÓN
-import PaymentSuccessPage from "./pages/PaymentSuccessPage"; // <-- AGREGA ESTA LÍNEA
-import PaymentFailurePage from "./pages/PaymentFailurePage"; // <-- AGREGA ESTA LÍNEA
-import { PaymentPendingPage } from "./pages/PaymentPendingPage"; // <-- AGREGA ESTA LÍNEA
+import BattleAdminPanel from "./pages/BattleAdminPanel";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import PaymentFailurePage from "./pages/PaymentFailurePage";
+import { PaymentPendingPage } from "./pages/PaymentPendingPage";
 import { initializeNotifications } from './services/notification.service';
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -23,7 +23,7 @@ function App() {
   }, []);
 
   return (
-    <ChakraProvider value={defaultSystem}>
+    <ChakraProvider value={system}>
       <AuthProvider>
         {/* Contenedor principal con fondo oscuro */}
         <Box
@@ -54,20 +54,20 @@ function App() {
               <Routes>
                 {/* Página principal - WODMATCH BATTLE */}
                 <Route path="/" element={<WODMATCHBATTLEPage />} />
-                
+
                 {/* Rutas de WODMATCH BATTLE */}
                 <Route path="/battle" element={<WODMATCHBATTLEPage />} />
                 <Route path="/battle/register" element={<BattleRegistrationPage />} />
-                
+
                 {/* 👈 AGREGAR RUTA DEL PANEL ADMIN */}
                 <Route path="/battle/admin" element={<BattleAdminPanel />} />
-                
+
                 {/* Login (mantenemos para autenticación) */}
                 <Route path="/login" element={<LoginPage />} />
-                
+
                 {/* Perfil de usuario (mantenemos básico) */}
                 <Route path="/profile/:uid" element={<ProfilePage />} />
-                
+
                 {/* Redireccionar todas las demás rutas a WODMATCH BATTLE */}
                 <Route path="/competitions" element={<Navigate to="/" replace />} />
                 <Route path="/competitions/:id" element={<Navigate to="/" replace />} />
@@ -81,7 +81,7 @@ function App() {
                 <Route path="/battle/payment-success" element={<PaymentSuccessPage />} />
                 <Route path="/battle/payment-failure" element={<PaymentFailurePage />} />
                 <Route path="/battle/payment-pending" element={<PaymentPendingPage />} />
-                
+
                 {/* Catch-all route - redirige a WODMATCH BATTLE */}
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>

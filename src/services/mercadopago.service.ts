@@ -12,23 +12,23 @@ export interface BattleRegistrationData {
   birthDate: string;
   email: string;
   whatsapp: string;
-  
+
   // Categoría
   category: 'intermedio-male' | 'intermedio-female' | 'scaled-male' | 'scaled-female';
-  
+
   // Contacto emergencia
   emergencyName: string;
   emergencyPhone: string;
   emergencyRelation?: string;
-  
+
   // Médico
   medicalConditions?: string;
   medications?: string;
-  
+
   // Waivers
   waiverAccepted: boolean;
   imageAuthorized?: boolean;
-  
+
   // Pago
   amount: number;
 }
@@ -51,7 +51,7 @@ export const createBattleRegistration = async (
     const headers: any = {
       'Content-Type': 'application/json'
     };
-    
+
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
@@ -107,7 +107,7 @@ export const checkPaymentStatus = async (paymentId: string): Promise<any> => {
     const response = await axios.get(
       `${API_URL}/api/battle-registrations/payment-status/${paymentId}`
     );
-    
+
     return response.data;
   } catch (error: any) {
     console.error('Error al verificar pago:', error);
@@ -128,21 +128,21 @@ export const initMercadoPagoSDK = () => {
     const script = document.createElement('script');
     script.src = 'https://sdk.mercadopago.com/js/v2';
     script.async = true;
-    
+
     script.onload = () => {
       if (!MP_PUBLIC_KEY) {
         reject(new Error('MercadoPago Public Key no configurada'));
         return;
       }
-      
+
       const mp = new (window as any).MercadoPago(MP_PUBLIC_KEY);
       resolve(mp);
     };
-    
+
     script.onerror = () => {
       reject(new Error('Error al cargar MercadoPago SDK'));
     };
-    
+
     document.head.appendChild(script);
   });
 };
@@ -152,14 +152,14 @@ export const openMercadoPagoCheckout = (initPointUrl: string) => {
   try {
     // Redirección simple
     window.location.href = initPointUrl;
-    
+
   } catch (error) {
     console.error('Error al abrir checkout:', error);
     throw error;
   }
 };
 // === HELPER: Obtener info de preferencia ===
-const getPreferenceById = async (preferenceId: string): Promise<MercadoPagoPreference> => {
+export const getPreferenceById = async (preferenceId: string): Promise<MercadoPagoPreference> => {
   try {
     const response = await axios.get(
       `${API_URL}/api/battle-registrations/preference/${preferenceId}`
@@ -182,7 +182,7 @@ export const getMyBattleRegistrations = async (token: string): Promise<any[]> =>
         }
       }
     );
-    
+
     return response.data.registrations;
   } catch (error: any) {
     console.error('Error al obtener registros:', error);
@@ -216,7 +216,7 @@ export const getAllBattleRegistrations = async (
         }
       }
     );
-    
+
     return response.data;
   } catch (error: any) {
     console.error('Error al obtener registros admin:', error);

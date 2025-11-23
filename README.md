@@ -1,73 +1,65 @@
-# React + TypeScript + Vite
+# WODMATCH BATTLE - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**WODMATCH BATTLE** es una plataforma web diseñada para la gestión y visualización de competencias de CrossFit en tiempo real. Este proyecto nace de la necesidad de centralizar la experiencia de competencia, permitiendo a los atletas registrarse, ver sus brackets y seguir los resultados en vivo.
 
-Currently, two official plugins are available:
+Este repositorio contiene el **Frontend** de la aplicación, desarrollado con tecnologías modernas para asegurar una experiencia de usuario fluida y reactiva.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🏆 Cumplimiento con la Rúbrica del Proyecto Final
 
-## React Compiler
+Este proyecto ha sido desarrollado siguiendo los lineamientos de la rúbrica de entrega, cumpliendo con los siguientes puntos:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. Plataforma Web y Propuesta Gráfica
+- **Fidelidad Gráfica**: La interfaz ha sido construida siguiendo la propuesta de diseño (Figma/Adobe), utilizando **Chakra UI** para mantener una estética profesional y consistente (Modo oscuro, paleta de colores verde/gris).
+- **Navegación**: Implementación de menús públicos y privados, con rutas protegidas para usuarios autenticados y administradores.
 
-## Expanding the ESLint configuration
+### 2. Estructura del Proyecto
+El código está organizado bajo una arquitectura modular y escalable:
+- **`src/contexts`**: Manejo de estado global (ej. `AuthContext` para la sesión del usuario).
+- **`src/hooks`**: Lógica reutilizable encapsulada en Custom Hooks.
+- **`src/pages`**: Vistas principales de la aplicación (`LoginPage`, `WODMATCHBATTLEPage`, etc.).
+- **`src/components`**: Componentes reutilizables e independientes (`NavBar`, `BracketView`).
+- **`src/services`**: Comunicación con APIs y servicios externos (Firebase, Backend).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 3. Funcionalidades Avanzadas
+- **Comunicación en Tiempo Real**: Uso de **Socket.io** para actualizar los brackets de competencia y resultados instantáneamente sin recargar la página.
+- **Estructuras de Datos Complejas**: Visualización dinámica de brackets de torneo (`BracketView`), manejando rondas, enfrentamientos y ganadores de forma lógica.
+- **Autenticación Real**: Sistema de Login y Registro seguro utilizando **Firebase Authentication**.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 4. Tecnologías Utilizadas
+- **Frontend**: React + TypeScript + Vite
+- **Estilos**: Chakra UI + Emotion
+- **Tiempo Real**: Socket.io Client
+- **HTTP Client**: Axios
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📋 Información de Entrega
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Propuesta Gráfica
+El diseño original y los prototipos se encuentran en:
+- [Enlace a Figma/Adobe XD](https://www.figma.com/...) *(Por favor, actualizar con el enlace real)*
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Despliegue (Deployment)
+La aplicación se encuentra desplegada y funcional en:
+- **Frontend (Netlify/Vercel):** [Enlace al Frontend](https://wod-match-battle.netlify.app) *(Por favor, actualizar con el enlace real)*
+- **Backend (Vercel/Render):** [Enlace al Backend](https://wod-match-api.vercel.app) *(Por favor, actualizar con el enlace real)*
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Integrantes del Equipo
+- **Nombre del Integrante 1** - Rol (Frontend/Backend)
+- **Nombre del Integrante 2** - Rol (Frontend/Backend)
+- **Nombre del Integrante 3** - Rol (Frontend/Backend)
+
+---
+
+## 🚀 Instalación y Ejecución Local
+
+1.  **Instalar dependencias:**
+    ```bash
+    npm install
+    ```
+2.  **Configurar variables de entorno:**
+    Asegúrate de tener el archivo `.env` con las credenciales de Firebase.
+3.  **Correr el servidor de desarrollo:**
+    ```bash
+    npm run dev
+    ```
