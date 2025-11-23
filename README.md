@@ -37,29 +37,11 @@ El código está organizado bajo una arquitectura modular y escalable:
 
 ### Propuesta Gráfica
 El diseño original y los prototipos se encuentran en:
-- [Enlace a Figma/Adobe XD](https://www.figma.com/...) *(Por favor, actualizar con el enlace real)*
+
 
 ### Despliegue (Deployment)
 La aplicación se encuentra desplegada y funcional en:
-- **Frontend (Netlify/Vercel):** [Enlace al Frontend](https://wod-match-battle.netlify.app) *(Por favor, actualizar con el enlace real)*
-- **Backend (Vercel/Render):** [Enlace al Backend](https://wod-match-api.vercel.app) *(Por favor, actualizar con el enlace real)*
+- **Frontend (Netlify/Vercel):** [Enlace al Frontend](https://wod-app-frontend-hvax.vercel.app/) 
+- **Backend (Vercel/Render):** [Enlace al Backend](https://wod-competitions-app.onrender.com) 
 
-### Integrantes del Equipo
-- **Nombre del Integrante 1** - Rol (Frontend/Backend)
-- **Nombre del Integrante 2** - Rol (Frontend/Backend)
-- **Nombre del Integrante 3** - Rol (Frontend/Backend)
-
----
-
-## 🚀 Instalación y Ejecución Local
-
-1.  **Instalar dependencias:**
-    ```bash
-    npm install
-    ```
-2.  **Configurar variables de entorno:**
-    Asegúrate de tener el archivo `.env` con las credenciales de Firebase.
-3.  **Correr el servidor de desarrollo:**
-    ```bash
-    npm run dev
-    ```
+--
